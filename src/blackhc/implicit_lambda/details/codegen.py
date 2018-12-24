@@ -162,6 +162,6 @@ def compile(expr, required_args=None):
         func = eval(func_code, func_globals, {})
     else:
         func = eval(lambda_code, func_globals, {})
-        func.code = func_code
+        func.code = lambda_code
         func.refs = refs
     return func

@@ -1,0 +1,145 @@
+{
+    "machine_info": {
+        "node": "Bertrand",
+        "processor": "Intel64 Family 6 Model 78 Stepping 3, GenuineIntel",
+        "machine": "AMD64",
+        "python_compiler": "MSC v.1912 64 bit (AMD64)",
+        "python_implementation": "CPython",
+        "python_implementation_version": "3.7.0",
+        "python_version": "3.7.0",
+        "python_build": [
+            "default",
+            "Jun 28 2018 08:04:48"
+        ],
+        "release": "10",
+        "system": "Windows",
+        "cpu": {
+            "vendor_id": "GenuineIntel",
+            "hardware": "unknown",
+            "brand": "Intel(R) Core(TM) i7-6650U CPU @ 2.20GHz"
+        }
+    },
+    "commit_info": {
+        "id": "1d4ebaf2feef2921825fa7ea1b9751f7f9e7c7e6",
+        "time": "2018-12-24T22:58:44+01:00",
+        "author_time": "2018-12-24T22:58:44+01:00",
+        "dirty": true,
+        "project": "implicit_lambda",
+        "branch": "master"
+    },
+    "benchmarks": [
+        {
+            "group": null,
+            "name": "test_normal_lambda",
+            "fullname": "src/blackhc/implicit_lambda/tests/test_performance.py::test_normal_lambda",
+            "params": null,
+            "param": null,
+            "extra_info": {
+                "Debug Mode": true
+            },
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": 100000
+            },
+            "stats": {
+                "min": 1.7158999999544732e-07,
+                "max": 2.0141439999998844e-05,
+                "mean": 2.780268861854274e-07,
+                "stddev": 1.9852032670609707e-07,
+                "rounds": 58279,
+                "median": 1.808700000083263e-07,
+                "iqr": 1.808700000083263e-07,
+                "q1": 1.7622999999744594e-07,
+                "q3": 3.5710000000577225e-07,
+                "iqr_outliers": 679,
+                "stddev_outliers": 3161,
+                "outliers": "3161;679",
+                "ld15iqr": 1.7158999999544732e-07,
+                "hd15iqr": 6.307199999966429e-07,
+                "ops": 3596774.4476812244,
+                "total": 0.01620312889999856,
+                "iterations": 100
+            }
+        },
+        {
+            "group": null,
+            "name": "test_il_lambda",
+            "fullname": "src/blackhc/implicit_lambda/tests/test_performance.py::test_il_lambda",
+            "params": null,
+            "param": null,
+            "extra_info": {
+                "Debug Mode": true
+            },
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": 100000
+            },
+            "stats": {
+                "min": 2.1332999999401637e-07,
+                "max": 2.142609999999934e-06,
+                "mean": 2.654070609221157e-07,
+                "stddev": 1.0548461720224089e-07,
+                "rounds": 44007,
+                "median": 2.2725000000001218e-07,
+                "iqr": 1.392000000599581e-08,
+                "q1": 2.1796999999601496e-07,
+                "q3": 2.3189000000201077e-07,
+                "iqr_outliers": 7593,
+                "stddev_outliers": 6430,
+                "outliers": "6430;7593",
+                "ld15iqr": 2.1332999999401637e-07,
+                "hd15iqr": 2.550699999925854e-07,
+                "ops": 3767797.2715784544,
+                "total": 0.011679768529999498,
+                "iterations": 100
+            }
+        },
+        {
+            "group": null,
+            "name": "test_op_chain",
+            "fullname": "src/blackhc/implicit_lambda/tests/test_performance.py::test_op_chain",
+            "params": null,
+            "param": null,
+            "extra_info": {
+                "Debug Mode": true
+            },
+            "options": {
+                "disable_gc": false,
+                "timer": "perf_counter",
+                "min_rounds": 5,
+                "max_time": 1.0,
+                "min_time": 5e-06,
+                "warmup": 100000
+            },
+            "stats": {
+                "min": 1.7158999999544732e-07,
+                "max": 5.059709999990503e-06,
+                "mean": 2.5920797903191157e-07,
+                "stddev": 1.1230245383916204e-07,
+                "rounds": 58279,
+                "median": 1.8551000000144313e-07,
+                "iqr": 1.9014999998567817e-07,
+                "q1": 1.7623000000632772e-07,
+                "q3": 3.663799999920059e-07,
+                "iqr_outliers": 316,
+                "stddev_outliers": 12430,
+                "outliers": "12430;316",
+                "ld15iqr": 1.7158999999544732e-07,
+                "hd15iqr": 6.539099999969267e-07,
+                "ops": 3857905.9322735392,
+                "total": 0.01510638181000309,
+                "iterations": 100
+            }
+        }
+    ],
+    "datetime": "2018-12-24T22:09:21.709233",
+    "version": "3.1.1"
+}
