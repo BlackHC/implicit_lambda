@@ -86,7 +86,7 @@ def test_literal():
 
 
 def assert_code(obj, code, required_args=None):
-    assert to_lambda(obj, required_args=required_args).sourcecode == code
+    assert to_lambda(obj, required_args=required_args).code == code
 
 
 def test_unwrap_literals():

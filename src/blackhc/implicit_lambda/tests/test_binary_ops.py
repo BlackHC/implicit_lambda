@@ -26,7 +26,7 @@ def test_exprs(op, x: int, y: int):
     hypothesis.assume(not capture_exception(elambda))
 
     clambda = codegen.compile(expr)
-    hypothesis.note(clambda.sourcecode)
+    hypothesis.note(clambda.code)
     assert elambda() == clambda()
 
 
@@ -42,5 +42,5 @@ def test_implicit_lambdas(op: expression.BinaryOps, x: int, y: int):
     hypothesis.assume(not capture_exception(code_lambda))
 
     hypothesis.note(code)
-    hypothesis.note(dsl_lambda.sourcecode)
+    hypothesis.note(dsl_lambda.code)
     assert code_lambda() == dsl_lambda()

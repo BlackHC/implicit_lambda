@@ -12,4 +12,4 @@ def test_placeholders(op: expression.BinaryOps):
     expr = eval(code)
     dsl_lambda = to_lambda(expr)
 
-    assert dsl_lambda.sourcecode == f"lambda x,y: {code}"
+    assert dsl_lambda.code == f"lambda x, y: {code}"
