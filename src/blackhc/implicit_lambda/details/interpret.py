@@ -12,6 +12,7 @@ class Context:
 
 
 def eval_expr(expr, context):
+    """Evaluate `expr` within `context` without compiling it. This is for testing only."""
     if isinstance(expr, expression.Expression):
         if isinstance(expr, expression.AccessorExpression):
             if expr.op == expression.AccessorOps.GET_ITEM:
@@ -89,4 +90,5 @@ def eval_expr(expr, context):
 
 
 def to_lambda(expr: expression.Expression):
+    """Convert `expr` to a Python lambda without compiling it. This is slow!"""
     return lambda *args, **kwargs: eval_expr(expr, Context(args, kwargs))

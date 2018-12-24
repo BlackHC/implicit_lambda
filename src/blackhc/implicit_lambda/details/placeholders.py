@@ -1,3 +1,4 @@
+"""Convenience placeholders."""
 from blackhc.implicit_lambda.details.lambda_dsl import arg
 
 _ = arg(0)

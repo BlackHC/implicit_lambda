@@ -5,26 +5,36 @@ from blackhc.implicit_lambda.details import codegen
 
 
 def to_lambda(expr, required_args=None):
+    """Convert expr into a Python lambda.
+
+    If `expr` is an implicit lambda or literal compile it into a Python lambda.
+    If `expr` is a callable, pass it through.
+    """
+
     if callable(expr) and not isinstance(expr, lambda_dsl.LambdaDSL):
-        # Assuem that this a callable, we'd like to use.
+        # Assume that this a callable, we'd like to use.
         return expr
 
     return codegen.compile(lambda_dsl.get_expr(expr), required_args=required_args)
 
 
 def call(func: callable, *args, **kwargs):
-    """Calls a resolved function `func` with `args` and `kwargs` that can contain expressions."""
+    """Calls `func` with `args` and `kwargs` that can contain expressions."""
     return lambda_dsl.call(to_lambda(callable, *args, **kwargs))
 
 
 def wrap(func):
-    """Wraps a given function to support expressions as parameters."""
+    """A decorator that wraps a given function to support implicit lambda expressions as parameters."""
 
     return functools.wraps(func)(lambda_dsl.literal(func))
 
 
 def auto_lambda(func=None, *, args: list = None, kwargs: set = None):
-    """Wraps a given function to accept implicit lambdas in addition to regular lambdas."""
+    """A decorator that wraps a given function to accept implicit lambdas in addition to regular lambdas.
+
+    `args` and `kwargs` specify the arguments that should be converted to Python lambdas if necesary.
+    """
+
     code = auto_lambda_code(args=args, kwargs=kwargs)
 
     def wrapper(func):

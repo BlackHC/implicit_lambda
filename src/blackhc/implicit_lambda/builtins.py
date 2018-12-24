@@ -1,3 +1,5 @@
+"""Implicit lambda wrappers around all Python builtins functions."""
+
 import builtins
 import functools
 from blackhc.implicit_lambda import wrap, to_lambda

@@ -1,3 +1,5 @@
+"""Implicit lambda wrappers around all Python itertools functions."""
+
 import functools
 import itertools
 import operator

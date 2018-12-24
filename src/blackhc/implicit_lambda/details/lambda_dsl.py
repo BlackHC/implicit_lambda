@@ -1,5 +1,4 @@
-"""
-"""
+"""Implicit lambda domain-specific language that wraps Python expressions into an internal expression AST."""
 import weakref
 from blackhc.implicit_lambda.details import expression
 from blackhc.implicit_lambda.details import codegen
@@ -9,6 +8,7 @@ _exprs = weakref.WeakKeyDictionary()
 
 
 def get_expr(expr):
+    """Unwrap expr into an `expression.Expression`. Handle literals correctly."""
     if isinstance(expr, LambdaDSL):
         return _exprs[expr]
     if isinstance(expr, tuple):
@@ -23,6 +23,8 @@ def get_expr(expr):
 
 
 class LambdaDSL:
+    """Implicit lambda DSL wrapper that casts all possible operations into the internal AST."""
+
     def __init__(self, expr):
         _exprs[self] = expr
 
@@ -137,12 +139,18 @@ def call(func: callable, *args, **kwargs):
 
 
 def kw(keyword: str):
+    """Placeholder for a keyword argument."""
     return LambdaDSL(expression.KwArgsAccessor(keyword))
 
 
 def arg(pos: int):
+    """Placeholder for a positional argument."""
     return LambdaDSL(expression.ArgsAccessor(pos))
 
 
 def literal(obj: object):
+    """Wraps an object, so that it will not be looked at by `get_expr`.dict
+
+    This is mainly to avoid descending into big dictionaries or lists by accident.
+    """
     return LambdaDSL(expression.LiteralExpression(obj))

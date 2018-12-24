@@ -1,8 +1,7 @@
-"""Implicit lambda functions
+"""Implicit lambdas
 
-An object that overloads all operations to make it easy to create implicit lambda functions.
-It represents expressions using an AST that can be then interpreted or compiled into a regular
-python expression/function.
+Import placeholders (_, x, y, z, ...) as needed. `_` is a placeholder for a first positional argument.
+The other placeholders come in quadruples (x, y, z, w, or a, b, c, d, and so on).
 """
 from blackhc.implicit_lambda.details.lambda_dsl import index, kw, arg, literal
 from blackhc.implicit_lambda.details.lambda_dsl import get_expr

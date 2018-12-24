@@ -1,5 +1,4 @@
-"""
-"""
+"""Code generation from expression to Python lambda."""
 from dataclasses import dataclass
 
 from blackhc.implicit_lambda.details import expression
@@ -153,6 +152,8 @@ def generate_code(expr, required_args=None):
 
 
 def compile(expr, required_args=None):
+    """Compiles `expr` into a Python lambda that takes at least `required_args` positional arguments."""
+
     lambda_code, refs = generate_code(expr, required_args=required_args)
 
     func_globals = dict(refs)
