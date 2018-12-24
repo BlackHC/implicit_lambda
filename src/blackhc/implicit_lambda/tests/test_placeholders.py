@@ -3,8 +3,6 @@ import pytest
 from blackhc.implicit_lambda import to_lambda, x, y
 from blackhc.implicit_lambda.details import expression
 
-import functools
-
 
 @pytest.mark.parametrize("op", set(expression.BinaryOps) - set([expression.BinaryOps.MATMUL]))
 def test_placeholders(op: expression.BinaryOps):

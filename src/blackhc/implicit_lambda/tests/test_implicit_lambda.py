@@ -2,7 +2,7 @@ import pytest
 
 from dataclasses import dataclass
 
-from blackhc.implicit_lambda import _, x, y, z, to_lambda, wrap, get_expr, literal, kw, arg, auto_lambda
+from blackhc.implicit_lambda import _, x, z, to_lambda, wrap, get_expr, literal, kw, arg, auto_lambda
 
 
 def test_index():
@@ -53,7 +53,7 @@ def test_call():
 
 def test_nested_call():
     @dataclass
-    class test_object:
+    class TestClass:
         field: object
 
         def method(self):
@@ -62,7 +62,7 @@ def test_nested_call():
     expr = _.method().method()
     expr_lambda = to_lambda(expr)
 
-    assert expr_lambda(test_object(test_object(1))) == 1
+    assert expr_lambda(TestClass(TestClass(1))) == 1
 
 
 def test_args():
