@@ -2,11 +2,12 @@ from blackhc.implicit_lambda import builtins
 from blackhc.implicit_lambda import itertools, functools
 from blackhc.implicit_lambda import _, to_lambda
 
+
 def test_builtins():
     assert builtins.max(1, 2) == 2
     assert list(builtins.map(_ + 2, range(5))) == list(range(2, 7))
-    assert list(builtins.filter(None, [1,2,0])) == [1, 2]
-    assert list(builtins.filter(_ - 1, [1,2,0])) == [2, 0]
+    assert list(builtins.filter(None, [1, 2, 0])) == [1, 2]
+    assert list(builtins.filter(_ - 1, [1, 2, 0])) == [2, 0]
     assert not builtins.callable(0)
     assert builtins.callable(_)
 

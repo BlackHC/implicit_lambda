@@ -28,7 +28,7 @@ class LambdaDSL:
 
     def __repr__(self):
         lambda_code, refs = codegen.generate_code(get_expr(self))
-        return f'<{type(self).__qualname__}: {lambda_code} @ {refs}>'
+        return f"<{type(self).__qualname__}: {lambda_code} @ {refs}>"
 
     def __call__(self, *args, **kwargs):
         return LambdaDSL(expression.CallExpression(get_expr(self), get_expr(args), get_expr(kwargs)))

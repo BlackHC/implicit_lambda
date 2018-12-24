@@ -15,9 +15,13 @@ bin._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.bin)(*arg
 bool = functools.update_wrapper(lambda *args, **kwargs: builtins.bool(*args, **kwargs), builtins.bool)
 bool._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.bool)(*args, **kwargs), builtins.bool)
 breakpoint = functools.update_wrapper(lambda *args, **kwargs: builtins.breakpoint(*args, **kwargs), builtins.breakpoint)
-breakpoint._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.breakpoint)(*args, **kwargs), builtins.breakpoint)
+breakpoint._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(builtins.breakpoint)(*args, **kwargs), builtins.breakpoint
+)
 bytearray = functools.update_wrapper(lambda *args, **kwargs: builtins.bytearray(*args, **kwargs), builtins.bytearray)
-bytearray._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.bytearray)(*args, **kwargs), builtins.bytearray)
+bytearray._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(builtins.bytearray)(*args, **kwargs), builtins.bytearray
+)
 bytes = functools.update_wrapper(lambda *args, **kwargs: builtins.bytes(*args, **kwargs), builtins.bytes)
 bytes._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.bytes)(*args, **kwargs), builtins.bytes)
 chr = functools.update_wrapper(lambda *args, **kwargs: builtins.chr(*args, **kwargs), builtins.chr)
@@ -35,7 +39,9 @@ dir._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.dir)(*arg
 divmod = functools.update_wrapper(lambda *args, **kwargs: builtins.divmod(*args, **kwargs), builtins.divmod)
 divmod._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.divmod)(*args, **kwargs), builtins.divmod)
 enumerate = functools.update_wrapper(lambda *args, **kwargs: builtins.enumerate(*args, **kwargs), builtins.enumerate)
-enumerate._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.enumerate)(*args, **kwargs), builtins.enumerate)
+enumerate._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(builtins.enumerate)(*args, **kwargs), builtins.enumerate
+)
 eval = functools.update_wrapper(lambda *args, **kwargs: builtins.eval(*args, **kwargs), builtins.eval)
 eval._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.eval)(*args, **kwargs), builtins.eval)
 exec = functools.update_wrapper(lambda *args, **kwargs: builtins.exec(*args, **kwargs), builtins.exec)
@@ -45,7 +51,9 @@ float._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.float)(
 format = functools.update_wrapper(lambda *args, **kwargs: builtins.format(*args, **kwargs), builtins.format)
 format._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.format)(*args, **kwargs), builtins.format)
 frozenset = functools.update_wrapper(lambda *args, **kwargs: builtins.frozenset(*args, **kwargs), builtins.frozenset)
-frozenset._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.frozenset)(*args, **kwargs), builtins.frozenset)
+frozenset._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(builtins.frozenset)(*args, **kwargs), builtins.frozenset
+)
 getattr = functools.update_wrapper(lambda *args, **kwargs: builtins.getattr(*args, **kwargs), builtins.getattr)
 getattr._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.getattr)(*args, **kwargs), builtins.getattr)
 globals = functools.update_wrapper(lambda *args, **kwargs: builtins.globals(*args, **kwargs), builtins.globals)
@@ -63,9 +71,13 @@ input._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.input)(
 int = functools.update_wrapper(lambda *args, **kwargs: builtins.int(*args, **kwargs), builtins.int)
 int._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.int)(*args, **kwargs), builtins.int)
 isinstance = functools.update_wrapper(lambda *args, **kwargs: builtins.isinstance(*args, **kwargs), builtins.isinstance)
-isinstance._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.isinstance)(*args, **kwargs), builtins.isinstance)
+isinstance._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(builtins.isinstance)(*args, **kwargs), builtins.isinstance
+)
 issubclass = functools.update_wrapper(lambda *args, **kwargs: builtins.issubclass(*args, **kwargs), builtins.issubclass)
-issubclass._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.issubclass)(*args, **kwargs), builtins.issubclass)
+issubclass._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(builtins.issubclass)(*args, **kwargs), builtins.issubclass
+)
 iter = functools.update_wrapper(lambda *args, **kwargs: builtins.iter(*args, **kwargs), builtins.iter)
 iter._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.iter)(*args, **kwargs), builtins.iter)
 len = functools.update_wrapper(lambda *args, **kwargs: builtins.len(*args, **kwargs), builtins.len)
@@ -77,7 +89,9 @@ locals._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.locals
 max = functools.update_wrapper(lambda *args, **kwargs: builtins.max(*args, **kwargs), builtins.max)
 max._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.max)(*args, **kwargs), builtins.max)
 memoryview = functools.update_wrapper(lambda *args, **kwargs: builtins.memoryview(*args, **kwargs), builtins.memoryview)
-memoryview._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.memoryview)(*args, **kwargs), builtins.memoryview)
+memoryview._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(builtins.memoryview)(*args, **kwargs), builtins.memoryview
+)
 min = functools.update_wrapper(lambda *args, **kwargs: builtins.min(*args, **kwargs), builtins.min)
 min._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.min)(*args, **kwargs), builtins.min)
 next = functools.update_wrapper(lambda *args, **kwargs: builtins.next(*args, **kwargs), builtins.next)
@@ -97,7 +111,9 @@ range._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.range)(
 repr = functools.update_wrapper(lambda *args, **kwargs: builtins.repr(*args, **kwargs), builtins.repr)
 repr._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.repr)(*args, **kwargs), builtins.repr)
 reversed = functools.update_wrapper(lambda *args, **kwargs: builtins.reversed(*args, **kwargs), builtins.reversed)
-reversed._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.reversed)(*args, **kwargs), builtins.reversed)
+reversed._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(builtins.reversed)(*args, **kwargs), builtins.reversed
+)
 round = functools.update_wrapper(lambda *args, **kwargs: builtins.round(*args, **kwargs), builtins.round)
 round._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.round)(*args, **kwargs), builtins.round)
 set = functools.update_wrapper(lambda *args, **kwargs: builtins.set(*args, **kwargs), builtins.set)
@@ -120,11 +136,29 @@ vars = functools.update_wrapper(lambda *args, **kwargs: builtins.vars(*args, **k
 vars._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.vars)(*args, **kwargs), builtins.vars)
 zip = functools.update_wrapper(lambda *args, **kwargs: builtins.zip(*args, **kwargs), builtins.zip)
 zip._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.zip)(*args, **kwargs), builtins.zip)
-callable = functools.update_wrapper(lambda arg0, *args, **kwargs: builtins.callable(arg0, *args, **kwargs), builtins.callable)
-callable._ = functools.update_wrapper(lambda arg0, *args, **kwargs: wrap(builtins.callable)(arg0, *args, **kwargs), builtins.callable)
+callable = functools.update_wrapper(
+    lambda arg0, *args, **kwargs: builtins.callable(arg0, *args, **kwargs), builtins.callable
+)
+callable._ = functools.update_wrapper(
+    lambda arg0, *args, **kwargs: wrap(builtins.callable)(arg0, *args, **kwargs), builtins.callable
+)
 
-map = functools.update_wrapper(lambda arg0, *args, **kwargs: builtins.map(to_lambda(arg0), *args, **kwargs), builtins.map)
-map._ = functools.update_wrapper(lambda arg0, *args, **kwargs: wrap(builtins.map)(to_lambda(arg0), *args, **kwargs), builtins.map)
+map = functools.update_wrapper(
+    lambda arg0, *args, **kwargs: builtins.map(to_lambda(arg0), *args, **kwargs), builtins.map
+)
+map._ = functools.update_wrapper(
+    lambda arg0, *args, **kwargs: wrap(builtins.map)(to_lambda(arg0), *args, **kwargs), builtins.map
+)
 
-filter = functools.update_wrapper(lambda arg0, *args, **kwargs: builtins.filter(to_lambda(arg0, required_args=1) if arg0 is not None else None, *args, **kwargs), builtins.filter)
-filter._ = functools.update_wrapper(lambda arg0, *args, **kwargs: wrap(builtins.filter)(to_lambda(arg0, required_args=1) if arg0 is not None else None, *args, **kwargs), builtins.filter)
+filter = functools.update_wrapper(
+    lambda arg0, *args, **kwargs: builtins.filter(
+        to_lambda(arg0, required_args=1) if arg0 is not None else None, *args, **kwargs
+    ),
+    builtins.filter,
+)
+filter._ = functools.update_wrapper(
+    lambda arg0, *args, **kwargs: wrap(builtins.filter)(
+        to_lambda(arg0, required_args=1) if arg0 is not None else None, *args, **kwargs
+    ),
+    builtins.filter,
+)

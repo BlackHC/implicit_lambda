@@ -34,7 +34,9 @@ def test_exprs(op, x: int, y: int):
 @pytest.mark.parametrize("op", set(expression.BinaryOps) - set([expression.BinaryOps.MATMUL]))
 def test_implicit_lambdas(op: expression.BinaryOps, x: int, y: int):
     code = op.value[1].format("x", "y")
-    code_lambda = lambda: eval(code, None, dict(x=x, y=y))
+
+    def code_lambda():
+        return eval(code, None, dict(x=x, y=y))
 
     dsl = op.value[1].format("lambda_dsl.LambdaDSL(x)", "lambda_dsl.LambdaDSL(y)")
     dsl_lambda = implicit_lambda.to_lambda(eval(dsl))

@@ -51,7 +51,7 @@ def auto_lambda_code(func=None, args: list = None, kwargs: set = None):
         *(
             [(f"arg{i}", f"to_lambda(arg{i})" if convert else f"arg{i}") for i, convert in enumerate(args)]
             + [("*args", "*args")]
-            + [(f"{kwarg}", f"{kwarg}=to_lambda(arg{i})") for kwarg in kwargs]
+            + [(f"{kwarg}", f"{kwarg}=to_lambda({kwarg})") for kwarg in kwargs]
             + [("**kwargs", "**kwargs")]
         )
     )

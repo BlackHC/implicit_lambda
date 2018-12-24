@@ -1,7 +1,7 @@
 """
 """
-import functools
 from dataclasses import dataclass
+
 from blackhc.implicit_lambda.details import expression
 
 
@@ -157,7 +157,7 @@ def compile(expr, required_args=None):
 
     func_globals = dict(refs)
     if __debug__:
-        func_globals['__refs'] = refs
+        func_globals["__refs"] = refs
         func_code = f'type({lambda_code!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_code}), refs=__refs, code={lambda_code!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'
         func = eval(func_code, func_globals, {})
     else:
