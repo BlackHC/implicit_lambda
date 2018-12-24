@@ -48,16 +48,6 @@ class Context:
     kwargs: dict
 
 
-@dataclass
-class CompiledExpr:
-    __slots__ = ("code", "refs")
-    code: str
-    refs: dict
-
-    def __repr__(self):
-        return f'<{self.functor} of {self.code} with {self.refs}>'
-
-
 def add_ref(context, value):
     ref_name = f"__ref{len(context.refs)}__"
     context.refs[ref_name] = value
@@ -117,7 +107,7 @@ def codegen_expr(expr, context: Context):
     return add_ref(context, expr)
 
 
-def compile(expr, required_args=None):
+def generate_code(expr, required_args=None):
     if required_args is None:
         required_args = 0
 
@@ -159,13 +149,19 @@ def compile(expr, required_args=None):
 
     lambda_code = f'lambda {", ".join(params)}: {expr_code}'
 
-    func_globals = dict(context.refs)
+    return lambda_code, context.refs
+
+
+def compile(expr, required_args=None):
+    lambda_code, refs = generate_code(expr, required_args=required_args)
+
+    func_globals = dict(refs)
     if __debug__:
-        func_globals['__refs'] = context.refs
+        func_globals['__refs'] = refs
         func_code = f'type({lambda_code!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_code}), refs=__refs, code={lambda_code!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'
         func = eval(func_code, func_globals, {})
     else:
         func = eval(lambda_code, func_globals, {})
         func.code = func_code
-        func.refs = context.refs
+        func.refs = refs
     return func

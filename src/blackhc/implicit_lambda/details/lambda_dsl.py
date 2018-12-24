@@ -2,6 +2,7 @@
 """
 import weakref
 from blackhc.implicit_lambda.details import expression
+from blackhc.implicit_lambda.details import codegen
 
 
 _exprs = weakref.WeakKeyDictionary()
@@ -24,6 +25,10 @@ def get_expr(expr):
 class LambdaDSL:
     def __init__(self, expr):
         _exprs[self] = expr
+
+    def __repr__(self):
+        lambda_code, refs = codegen.generate_code(get_expr(self))
+        return f'<{type(self).__qualname__}: {lambda_code} @ {refs}>'
 
     def __call__(self, *args, **kwargs):
         return LambdaDSL(expression.CallExpression(get_expr(self), get_expr(args), get_expr(kwargs)))
@@ -126,7 +131,6 @@ def index(obj, key):
     return LambdaDSL(expression.AccessorExpression(expression.AccessorOps.GET_ITEM, obj, get_expr(key)))
 
 
-# TODO: should this call to `to_lambda` on `func`?
 def call(func: callable, *args, **kwargs):
     """Calls a resolved function `func` with `args` and `kwargs` that can contain expressions."""
     return LambdaDSL(expression.CallExpression(func, get_expr(args), get_expr(kwargs)))

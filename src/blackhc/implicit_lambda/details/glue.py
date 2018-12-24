@@ -12,6 +12,11 @@ def to_lambda(expr, required_args=None):
     return codegen.compile(lambda_dsl.get_expr(expr), required_args=required_args)
 
 
+def call(func: callable, *args, **kwargs):
+    """Calls a resolved function `func` with `args` and `kwargs` that can contain expressions."""
+    return lambda_dsl.call(to_lambda(callable, *args, **kwargs))
+
+
 def wrap(func):
     """Wraps a given function to support expressions as parameters."""
 

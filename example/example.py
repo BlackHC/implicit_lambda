@@ -1,41 +1,39 @@
-from blackhc.implicit_lambda import _, to_lambda, interpreted_lambda, index
-from dataclasses import dataclass
-import timeit
+import pytest
 
-my_dict = dict(hello="world")
-
-l = to_lambda(_ + _)
-a = to_lambda(_["hello"])
-b = to_lambda(_.the_field)
-c = to_lambda(_.echo("hello world"))
-
-print(to_lambda(index(my_dict, _))("hello"))
-
-expr = 2 * _ * 3 * _ * 5
-expr_eval_lambda = to_lambda(expr)
-print(expr_eval_lambda.sourcecode)
-expr_compile_lambda = interpreted_lambda(expr)
-print(interpreted_lambda(2 * _ * 3 * _ * 5)(10))
-
-direct_lambda = lambda *args, **kwargs: ((((2) * (args[0])) * (3)) * (args[0])) * (5)
+from blackhc.implicit_lambda import _, x, y, to_lambda
+from blackhc.implicit_lambda.builtins import map, filter
 
 
-@dataclass
-class T:
-    the_field: str
+def main():
+    # ... has wrappers around all common builtins.
+    a_list = list(range(10))
 
-    def echo(self, text):
-        print(text)
+    mapped_list = map(_ + 2, a_list)
+
+    assert list(mapped_list) == list(range(2, 12))
+
+    # ... has wrappers that turn builtins into lazy functions, too
+    mapper = to_lambda(map._(x + 2, _))
+
+    mapped_list = mapper(a_list)
+
+    assert list(mapped_list) == list(range(2, 12))
+
+    # ... supports nested expressions
+    mapped_list = map((_ << 3) * 3 - 23 * _ + 2, a_list)
+
+    assert list(mapped_list) == list(range(2, 12))
+
+    # ... has useful reprs in __debug__ mode (don't specify -O)
+    another_lambda = to_lambda((_ << 3) * 3 - 23 * _ + 2)
+    assert repr(another_lambda) == '<lambda x: ((((x << 3) * 3) - (23 * x)) + 2) @ {}>'
+
+    # ... (or, but not executable)
+    assert repr((_ << 3) * 3 - 23 * _ + 2) == '<LambdaDSL: lambda x: ((((x << 3) * 3) - (23 * x)) + 2) @ {}>'
+
+    # ... supports multiple arguments
+    assert to_lambda(x * y)(5, 3) == 15
 
 
-print(l(2))
-print(b(T("hello world")))
-c(T("a"))
-
-# print(a(dict(hello='world')))
-# print(to_lambda(_ - 5)(4))
-
-
-print(timeit.timeit(lambda: direct_lambda(10)))
-print(timeit.timeit(lambda: expr_eval_lambda(10)))
-print(timeit.timeit(lambda: expr_compile_lambda(10)))
+if __name__ == "__main__":
+    main()
