@@ -7,3 +7,4 @@ workspace.code-workspace
 *.egg-info
 dist/
 build/
+.coverage

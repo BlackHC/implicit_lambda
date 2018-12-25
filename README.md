@@ -1,6 +1,6 @@
 # Implicit lambdas
 
-[![Build Status](https://travis-ci.org/BlackHC/implicit_lambda.svg?branch=master)](https://travis-ci.org/BlackHC/implicit_lambda)
+[![Build Status](https://www.travis-ci.com/BlackHC/implicit_lambda.svg?branch=master)](https://www.travis-ci.com/BlackHC/implicit_lambda) [![codecov](https://codecov.io/gh/BlackHC/implicit_lambda/branch/master/graph/badge.svg)](https://codecov.io/gh/BlackHC/implicit_lambda) [![PyPI](https://img.shields.io/badge/PyPI-blackhc.implicit_lambda-blue.svg)](https://pypi.python.org/pypi/blackhc.implicit_lambda/)
 
 This package adds support for implicit lambdas, so you can write `map(_ + 5, a_list)` instead of `map(lambda x: x + 5, a_list)`.
 
@@ -110,4 +110,12 @@ Implicit lambdas support multiple arguments, too:
 
 ```python
     assert to_lambda(x * y)(5, 3) == 15
+```
+
+## Performance measurement
+
+Run
+
+```python
+python -O -m pytest -k test_performance --benchmark-warmup=on --benchmark-autosave --benchmark-disable-gc
 ```
