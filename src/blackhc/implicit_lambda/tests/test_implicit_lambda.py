@@ -78,7 +78,7 @@ def test_args():
 
 def test_literal():
     def assert_literal(obj):
-        assert to_lambda(literal(obj))() == obj
+        assert to_lambda(literal(obj))() is obj
 
     assert_literal(_ + 1)
     assert_literal([_ + 1])
@@ -141,5 +141,5 @@ def test_id_hash():
 
 
 def test_expr_structural_equal_but_id_hash():
-    assert next._(_) == next._(_)
-    assert hash(next._(_)) != hash(next._(_))
+    assert get_expr(next._(_)) == get_expr(next._(_))
+    assert hash(get_expr(next._(_))) != hash(get_expr(next._(_)))
