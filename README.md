@@ -22,7 +22,7 @@ test_op_chain         195.0673 (1.0)       60.6268 (1.0)      176.2300 (1.06)   
 Without `-O`, lambdas with a more verbose `repr` are created:
 
 ```python
-assert repr(_ + 5) == <LambdaDSL: lambda x: (x + 5) @ {}>
+assert repr(_ + 5) == "<LambdaDSL: lambda x: (x + 5) @ {}>"
 ```
 
 This results in up to 20% slower execution for very simple expressions. (A new type is created on the fly to hold the expression and resolving a call using a custom `__call__` is sufficient to incur such a penalty.)

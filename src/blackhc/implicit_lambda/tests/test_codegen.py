@@ -1,5 +1,6 @@
 import codegen
 
+
 def test_binary_ops():
     codegen.BinaryExpression.generate_evals()
     codegen.BinaryExpression.generate_implicit_lambda_wrappers()

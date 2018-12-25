@@ -57,6 +57,9 @@ setup(
     # dependencies). You can install these using the following syntax,
     # for example:
     # $ pip install -e .[dev,test]
-    extras_require={"dev": ["check-manifest"], "test": ["coverage", "codecov", "pytest", "pytest-benchmark", "pytest-cov", "hypothesis"]},
+    extras_require={
+        "dev": ["check-manifest"],
+        "test": ["coverage", "codecov", "pytest", "pytest-benchmark", "pytest-cov", "hypothesis"],
+    },
     setup_requires=["pytest-runner"],
 )
