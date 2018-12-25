@@ -1,5 +1,5 @@
-import blackhc.implicit_lambda.details.expression as expression
-import blackhc.implicit_lambda as implicit_lambda
+from blackhc.implicit_lambda.details import expression
+from blackhc.implicit_lambda.details import glue
 
 
 class BinaryExpression:
@@ -27,8 +27,8 @@ class BinaryExpression:
 
 def auto_lambda_static_code(func, *, module="builtins", args=None, kwargs=None):
     wrapped_func = f"{module}.{func}"
-    code = implicit_lambda.auto_lambda_code(wrapped_func, args=args, kwargs=kwargs)
-    wrapped_code = implicit_lambda.auto_lambda_code(f"wrap({wrapped_func})", args=args, kwargs=kwargs)
+    code = glue.auto_lambda_code(wrapped_func, args=args, kwargs=kwargs)
+    wrapped_code = glue.auto_lambda_code(f"wrap({wrapped_func})", args=args, kwargs=kwargs)
     if code != wrapped_func:
         print(f"{func} = functools.update_wrapper({code}, {wrapped_func})")
     else:

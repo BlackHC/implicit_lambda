@@ -1,3 +1,5 @@
 [run]
 source=src/blackhc/implicit_lambda/*
-omit=*/tests/*
+omit=
+    */tests/*
+    setup.py
