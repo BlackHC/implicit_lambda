@@ -2,6 +2,7 @@ import pytest
 
 from dataclasses import dataclass
 
+from blackhc.implicit_lambda.builtins import next
 from blackhc.implicit_lambda import _, x, z, to_lambda, wrap, get_expr, literal, kw, arg, auto_lambda
 
 
@@ -122,3 +123,13 @@ def test_auto_lambda():
     underscored = to_lambda(take_callable._(_, _ * 2))
     assert underscored(5) == 10
     assert underscored(3) == 6
+
+
+def test_id_hash():
+    assert to_lambda({next._(_), next._(_), next._(_)})(iter(range(3))) == set(range(3))
+    assert to_lambda({next._(_): 0, next._(_): 1, next._(_): 2})(iter(range(3))) == {i: i for i in range(3)}
+
+
+def test_expr_structural_equal_but_id_hash():
+    assert next._(_) == next._(_)
+    assert hash(next._(_)) != hash(next._(_))

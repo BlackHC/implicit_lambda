@@ -6,9 +6,13 @@ from dataclasses import dataclass
 import typing
 
 
+id_hash = lambda self: id(self)
+
+
 @dataclass(frozen=True)
 class Expression:
     __slots__ = ()
+    __hash__ = id_hash
 
 
 class AccessorOps(Enum):
@@ -19,6 +23,7 @@ class AccessorOps(Enum):
 @dataclass(frozen=True)
 class AccessorExpression(Expression):
     __slots__ = ("op", "target", "key")
+    __hash__ = id_hash
     op: AccessorOps
     target: Expression
     key: Expression
@@ -98,6 +103,7 @@ class OptionalArgOps(Enum):
 @dataclass(frozen=True)
 class OpExpression(Expression):
     __slots__ = ("op", "num_args", "arg0", "arg1", "arg2")
+    __hash__ = id_hash
     op: OpInfo
     num_args: int
     arg0: Expression
@@ -120,6 +126,7 @@ class ArgsAccessor(Expression):
 @dataclass(frozen=True)
 class CallExpression(Expression):
     __slots__ = ("target", "args", "kwargs")
+    __hash__ = id_hash
     target: Expression
     args: list
     kwargs: dict
@@ -128,4 +135,5 @@ class CallExpression(Expression):
 @dataclass(frozen=True)
 class LiteralExpression(Expression):
     __slots__ = ["literal"]
+    __hash__ = id_hash
     literal: object

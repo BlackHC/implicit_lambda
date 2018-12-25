@@ -8,3 +8,4 @@ workspace.code-workspace
 dist/
 build/
 .coverage
+.pytest_cache/
