@@ -1,0 +1,4 @@
+include *.py
+include LICENSE
+recursive-include example *.py
+recursive-include src *.py

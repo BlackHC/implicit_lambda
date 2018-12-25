@@ -46,13 +46,15 @@ setup(
     keywords="tools lambda placeholder",
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=["blackhc.implicit_lambda"],
+    packages=["blackhc.implicit_lambda", "blackhc.implicit_lambda.details", "blackhc.implicit_lambda.tests"],
     package_dir={"": "src"},
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[],
+    # We are using git.
+    use_scm_version=True,
     # List additional groups of dependencies here (e.g. development
     # dependencies). You can install these using the following syntax,
     # for example:
