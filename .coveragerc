@@ -3,3 +3,5 @@ source=src/blackhc/implicit_lambda/*
 omit=
     */tests/*
     setup.py
+    # interpret.py is only used for testing.
+    src/blackhc/implicit_lambda/details/interpret.py
