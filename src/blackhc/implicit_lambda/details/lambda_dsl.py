@@ -1,16 +1,15 @@
 """Implicit lambda domain-specific language that wraps Python expressions into an internal expression AST."""
-import weakref
 from blackhc.implicit_lambda.details import expression
 from blackhc.implicit_lambda.details import codegen
 
 
-_exprs = weakref.WeakKeyDictionary()
+_exprs = {}
 
 
 def get_expr(expr):
     """Unwrap expr into an `expression.Expression`. Handle literals correctly."""
     if isinstance(expr, LambdaDSL):
-        return _exprs[expr]
+        return _exprs[id(expr)]
     if isinstance(expr, tuple):
         return tuple(get_expr(item) for item in expr)
     if isinstance(expr, list):
@@ -26,7 +25,13 @@ class LambdaDSL:
     """Implicit lambda DSL wrapper that casts all possible operations into the internal AST."""
 
     def __init__(self, expr):
-        _exprs[self] = expr
+        _exprs[id(self)] = expr
+
+    def __dell__(self):
+        del _exprs[id(self)]
+
+    def __hash__(self):
+        return id(self)
 
     def __repr__(self):
         lambda_code, refs = codegen.generate_code(get_expr(self))
@@ -43,89 +48,184 @@ class LambdaDSL:
             expression.AccessorExpression(expression.AccessorOps.GET_ATTRIBUTE, get_expr(self), get_expr(name))
         )
 
-    def __add__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.ADD, get_expr(self), get_expr(other)))
+    # ## begin `cg.OpExpression.generate_lambda_dsl_wrappers()`
+    def __add__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ArithmeticOps.ADD, 2, get_expr(self), get_expr(arg0), None))
 
-    def __radd__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.ADD, get_expr(other), get_expr(self)))
+    def __sub__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ArithmeticOps.SUB, 2, get_expr(self), get_expr(arg0), None))
 
-    def __sub__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.SUB, get_expr(self), get_expr(other)))
+    def __mul__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ArithmeticOps.MUL, 2, get_expr(self), get_expr(arg0), None))
 
-    def __rsub__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.SUB, get_expr(other), get_expr(self)))
+    def __matmul__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.MATMUL, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __mul__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.MUL, get_expr(self), get_expr(other)))
+    def __truediv__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.TRUEDIV, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __rmul__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.MUL, get_expr(other), get_expr(self)))
+    def __floordiv__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.FLOORDIV, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __matmul__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.MATMUL, get_expr(self), get_expr(other)))
+    def __mod__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ArithmeticOps.MOD, 2, get_expr(self), get_expr(arg0), None))
 
-    def __rmatmul__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.MATMUL, get_expr(other), get_expr(self)))
+    def __divmod__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.DIVMOD, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __truediv__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.TRUEDIV, get_expr(self), get_expr(other)))
+    def __lshift__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.LSHIFT, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __rtruediv__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.TRUEDIV, get_expr(other), get_expr(self)))
+    def __rshift__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RSHIFT, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __floordiv__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.FLOORDIV, get_expr(self), get_expr(other)))
+    def __and__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ArithmeticOps.AND, 2, get_expr(self), get_expr(arg0), None))
 
-    def __rfloordiv__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.FLOORDIV, get_expr(other), get_expr(self)))
+    def __xor__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ArithmeticOps.XOR, 2, get_expr(self), get_expr(arg0), None))
 
-    def __mod__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.MOD, get_expr(self), get_expr(other)))
+    def __or__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ArithmeticOps.OR, 2, get_expr(self), get_expr(arg0), None))
 
-    def __rmod__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.MOD, get_expr(other), get_expr(self)))
+    def __radd__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RADD, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __divmod__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.DIVMOD, get_expr(self), get_expr(other)))
+    def __rsub__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RSUB, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __rdivmod__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.DIVMOD, get_expr(other), get_expr(self)))
+    def __rmul__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RMUL, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __pow__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.POW, get_expr(self), get_expr(other)))
+    def __rmatmul__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RMATMUL, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __rpow__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.POW, get_expr(other), get_expr(self)))
+    def __rtruediv__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RTRUEDIV, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __lshift__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.LSHIFT, get_expr(self), get_expr(other)))
+    def __rfloordiv__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RFLOORDIV, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __rlshift__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.LSHIFT, get_expr(other), get_expr(self)))
+    def __rmod__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RMOD, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __rshift__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.RSHIFT, get_expr(self), get_expr(other)))
+    def __rdivmod__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RDIVMOD, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __rrshift__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.RSHIFT, get_expr(other), get_expr(self)))
+    def __rpow__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RPOW, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __and__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.AND, get_expr(self), get_expr(other)))
+    def __rlshift__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RLSHIFT, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __rand__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.AND, get_expr(other), get_expr(self)))
+    def __rrshift__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RRSHIFT, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __xor__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.XOR, get_expr(self), get_expr(other)))
+    def __rand__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RAND, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __rxor__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.XOR, get_expr(other), get_expr(self)))
+    def __rxor__(self, arg0):
+        return LambdaDSL(
+            expression.OpExpression(expression.ArithmeticOps.RXOR, 2, get_expr(self), get_expr(arg0), None)
+        )
 
-    def __or__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.OR, get_expr(self), get_expr(other)))
+    def __ror__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ArithmeticOps.ROR, 2, get_expr(self), get_expr(arg0), None))
 
-    def __ror__(self, other):
-        return LambdaDSL(expression.BinaryExpression(expression.BinaryOps.OR, get_expr(other), get_expr(self)))
+    def __lt__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ComparisonOps.LT, 2, get_expr(self), get_expr(arg0), None))
+
+    def __le__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ComparisonOps.LE, 2, get_expr(self), get_expr(arg0), None))
+
+    def __gt__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ComparisonOps.GT, 2, get_expr(self), get_expr(arg0), None))
+
+    def __ge__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ComparisonOps.GE, 2, get_expr(self), get_expr(arg0), None))
+
+    def __eq__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ComparisonOps.EQ, 2, get_expr(self), get_expr(arg0), None))
+
+    def __ne__(self, arg0):
+        return LambdaDSL(expression.OpExpression(expression.ComparisonOps.NE, 2, get_expr(self), get_expr(arg0), None))
+
+    def __pos__(self,):
+        return LambdaDSL(expression.OpExpression(expression.UnaryOps.POSITIVE, 1, get_expr(self), None, None))
+
+    def __neg__(self,):
+        return LambdaDSL(expression.OpExpression(expression.UnaryOps.NEGATIVE, 1, get_expr(self), None, None))
+
+    def __abs__(self,):
+        return LambdaDSL(expression.OpExpression(expression.UnaryOps.ABS, 1, get_expr(self), None, None))
+
+    def __invert__(self,):
+        return LambdaDSL(expression.OpExpression(expression.UnaryOps.INVERT, 1, get_expr(self), None, None))
+
+    def __trunc__(self,):
+        return LambdaDSL(expression.OpExpression(expression.UnaryOps.TRUNC, 1, get_expr(self), None, None))
+
+    def __floor__(self,):
+        return LambdaDSL(expression.OpExpression(expression.UnaryOps.FLOOR, 1, get_expr(self), None, None))
+
+    def __ceil__(self,):
+        return LambdaDSL(expression.OpExpression(expression.UnaryOps.CEIL, 1, get_expr(self), None, None))
+
+    # ## end `codegen.OpExpression.generate_lambda_dsl_wrappers()`
+
+    def __pow__(self, other, modulo=None):
+        if modulo is None:
+            return LambdaDSL(
+                expression.OpExpression(expression.OptionalArgOps.POW_2, 2, get_expr(self), get_expr(other), None)
+            )
+        return LambdaDSL(
+            expression.OpExpression(
+                expression.OptionalArgOps.POW_3, 3, get_expr(self), get_expr(other), get_expr(modulo)
+            )
+        )
+
+    def __round__(self, ndigits=None):
+        if ndigits is None:
+            return LambdaDSL(expression.OpExpression(expression.OptionalArgOps.ROUND_1, 1, get_expr(self), None, None))
+        return LambdaDSL(
+            expression.OpExpression(expression.OptionalArgOps.ROUND_2, 2, get_expr(self), get_expr(ndigits), None)
+        )
 
 
 def index(obj, key):

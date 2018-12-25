@@ -3,6 +3,7 @@ Expression AST.
 """
 from enum import Enum
 from dataclasses import dataclass
+import typing
 
 
 @dataclass(frozen=True)
@@ -23,30 +24,85 @@ class AccessorExpression(Expression):
     key: Expression
 
 
-class BinaryOps(Enum):
-    ADD = ("add", "({} + {})")
-    SUB = ("sub", "({} - {})")
-    MUL = ("mul", "({} * {})")
-    MATMUL = ("matmul", "({} @ {})")
-    TRUEDIV = ("truediv", "({} / {})")
-    FLOORDIV = ("floordiv", "({} // {})")
-    MOD = ("mod", "({} % {})")
-    DIVMOD = ("divmod", "divmod({}, {})")
-    # TODO: POW is actually ternary!
-    POW = ("pow", "pow({}, {})")
-    LSHIFT = ("lshift", "({} << {})")
-    RSHIFT = ("rshift", "({} >> {})")
-    AND = ("and", "({} & {})")
-    XOR = ("xor", "({} ^ {})")
-    OR = ("or", "({} | {})")
+@dataclass(frozen=True)
+class OpInfo:
+    __slots__ = ("name", "num_args", "template")
+    name: str
+    num_args: typing.Union[int, typing.Tuple[int]]
+    template: typing.Union[str, typing.Tuple[str]]
+
+
+class ArithmeticOps(Enum):
+    ADD = OpInfo("__add__", 2, "({} + {})")
+    SUB = OpInfo("__sub__", 2, "({} - {})")
+    MUL = OpInfo("__mul__", 2, "({} * {})")
+    MATMUL = OpInfo("__matmul__", 2, "({} @ {})")
+    TRUEDIV = OpInfo("__truediv__", 2, "({} / {})")
+    FLOORDIV = OpInfo("__floordiv__", 2, "({} // {})")
+    MOD = OpInfo("__mod__", 2, "({} % {})")
+    DIVMOD = OpInfo("__divmod__", 2, "divmod({}, {})")
+    LSHIFT = OpInfo("__lshift__", 2, "({} << {})")
+    RSHIFT = OpInfo("__rshift__", 2, "({} >> {})")
+    AND = OpInfo("__and__", 2, "({} & {})")
+    XOR = OpInfo("__xor__", 2, "({} ^ {})")
+    OR = OpInfo("__or__", 2, "({} | {})")
+
+    RADD = OpInfo("__radd__", 2, "({1} + {0})")
+    RSUB = OpInfo("__rsub__", 2, "({1} - {0})")
+    RMUL = OpInfo("__rmul__", 2, "({1} * {0})")
+    RMATMUL = OpInfo("__rmatmul__", 2, "({1} @ {0})")
+    RTRUEDIV = OpInfo("__rtruediv__", 2, "({1} / {0})")
+    RFLOORDIV = OpInfo("__rfloordiv__", 2, "({1} // {0})")
+    RMOD = OpInfo("__rmod__", 2, "({1} % {0})")
+    RDIVMOD = OpInfo("__rdivmod__", 2, "divmod({1}, {0})")
+    RPOW = OpInfo("__rpow__", 2, "pow({1}, {0})")
+    RLSHIFT = OpInfo("__rlshift__", 2, "({1} << {0})")
+    RRSHIFT = OpInfo("__rrshift__", 2, "({1} >> {0})")
+    RAND = OpInfo("__rand__", 2, "({1} & {0})")
+    RXOR = OpInfo("__rxor__", 2, "({1} ^ {0})")
+    ROR = OpInfo("__ror__", 2, "({1} | {0})")
+
+
+class ComparisonOps(Enum):
+    LT = OpInfo("__lt__", 2, "({} < {})")
+    LE = OpInfo("__le__", 2, "({} <= {})")
+    GT = OpInfo("__gt__", 2, "({} > {})")
+    GE = OpInfo("__ge__", 2, "({} >= {})")
+    EQ = OpInfo("__eq__", 2, "({} == {})")
+    NE = OpInfo("__ne__", 2, "({} != {})")
+
+
+class UnaryOps(Enum):
+    POSITIVE = OpInfo("__pos__", 1, "(+{})")
+    NEGATIVE = OpInfo("__neg__", 1, "(-{})")
+    ABS = OpInfo("__abs__", 1, "abs({})")
+    INVERT = OpInfo("__invert__", 1, "(~{})")
+    TRUNC = OpInfo("__trunc__", 1, "math.trunc({})")
+    FLOOR = OpInfo("__floor__", 1, "math.floor({})")
+    CEIL = OpInfo("__ceil__", 1, "math.ceil({})")
+
+
+Ops = set(ArithmeticOps) | set(ComparisonOps) | set(UnaryOps)
+
+
+class OptionalArgOps(Enum):
+    ROUND_1 = OpInfo("__round__", 1, "round({})")
+    ROUND_2 = OpInfo("__round__", 2, "round({}, {})")
+    POW_2 = OpInfo("__pow__", 2, "pow({}, {})")
+    POW_3 = OpInfo("__pow__", 3, "pow({}, {}, {})")
+
+
+# TODO: index, complex, int, float!!! and slices!
 
 
 @dataclass(frozen=True)
-class BinaryExpression(Expression):
-    __slots__ = ("op", "lhs", "rhs")
-    op: BinaryOps
-    lhs: Expression
-    rhs: Expression
+class OpExpression(Expression):
+    __slots__ = ("op", "num_args", "arg0", "arg1", "arg2")
+    op: OpInfo
+    num_args: int
+    arg0: Expression
+    arg1: Expression
+    arg2: Expression
 
 
 @dataclass(frozen=True)

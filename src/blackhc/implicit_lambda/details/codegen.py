@@ -1,17 +1,23 @@
 """Code generation from expression to Python lambda."""
+import builtins
+import math
 from dataclasses import dataclass
 
 from blackhc.implicit_lambda.details import expression
 
 
 def collect_args(expr, args: set, kwargs: set):
+    if expr is None:
+        return
+
     if isinstance(expr, expression.Expression):
         if isinstance(expr, expression.AccessorExpression):
             collect_args(expr.target, args, kwargs)
             collect_args(expr.key, args, kwargs)
-        elif isinstance(expr, expression.BinaryExpression):
-            collect_args(expr.lhs, args, kwargs)
-            collect_args(expr.rhs, args, kwargs)
+        elif isinstance(expr, expression.OpExpression):
+            collect_args(expr.arg0, args, kwargs)
+            collect_args(expr.arg1, args, kwargs)
+            collect_args(expr.arg2, args, kwargs)
         elif isinstance(expr, expression.CallExpression):
             collect_args(expr.target, args, kwargs)
             collect_args(expr.args, args, kwargs)
@@ -54,6 +60,9 @@ def add_ref(context, value):
 
 
 def codegen_expr(expr, context: Context):
+    if expr is None:
+        return repr(None)
+
     if isinstance(expr, expression.Expression):
         if isinstance(expr, expression.AccessorExpression):
             if expr.op == expression.AccessorOps.GET_ITEM:
@@ -65,8 +74,10 @@ def codegen_expr(expr, context: Context):
 
             raise NotImplementedError(expr.op)
 
-        if isinstance(expr, expression.BinaryExpression):
-            return f"{expr.op.value[1].format(codegen_expr(expr.lhs, context), codegen_expr(expr.rhs, context))}"
+        if isinstance(expr, expression.OpExpression):
+            return expr.op.value.template.format(
+                codegen_expr(expr.arg0, context), codegen_expr(expr.arg1, context), codegen_expr(expr.arg2, context)
+            )
 
         if isinstance(expr, expression.CallExpression):
             func = codegen_expr(expr.target, context)
@@ -157,6 +168,8 @@ def compile(expr, required_args=None):
     lambda_code, refs = generate_code(expr, required_args=required_args)
 
     func_globals = dict(refs)
+    func_globals["__builtins__"] = builtins
+    func_globals["math"] = math
     if __debug__:
         func_globals["__refs"] = refs
         func_code = f'type({lambda_code!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_code}), refs=__refs, code={lambda_code!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'

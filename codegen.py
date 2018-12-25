@@ -2,26 +2,32 @@ from blackhc.implicit_lambda.details import expression
 from blackhc.implicit_lambda.details import glue
 
 
-class BinaryExpression:
+class OpExpression:
     @staticmethod
-    def generate_implicit_lambda_wrappers():
-        for op in expression.BinaryOps:
+    def generate_lambda_dsl_wrappers():
+        for op in expression.Ops:
+            info: expression.OpInfo = op.value
+
+            params = [f"get_expr(arg{i})" for i in range(info.num_args - 1)] + [
+                "None" for i in range(3 - info.num_args)
+            ]
+
             print(
                 f"""
-    def __{op.value[0]}__(self, other):
-        return ImplicitLambda(expression.BinaryExpression(expression.BinaryOp.{op.name}, self.expr, get_expr(other)))
-
-    def __r{op.value[0]}__(self, other):
-        return ImplicitLambda(expression.BinaryExpression(expression.BinaryOp.{op.name}, get_expr(other), self.expr))"""
+    def {info.name}(self, {", ".join(f"arg{i}" for i in range(info.num_args-1))}):
+        return LambdaDSL(expression.OpExpression(expression.{op.__class__.__name__}.{op.name}, {info.num_args}, get_expr(self), {", ".join(params)}))
+                    """
             )
 
     @staticmethod
     def generate_evals():
-        for op in expression.BinaryOps:
+        for op in expression.Ops:
+            info: expression.OpInfo = op.value
+
             print(
                 f"""
-    if expr.op == expression.BinaryOp.{op.name}:
-        return {op.value[1].format('eval_expr(expr.lhs, context)', 'eval_expr(expr.rhs, context)')}"""
+        if expr.op == expression.{op.__class__.__name__}.{op.name}:
+            return {info.template.format('eval_expr(expr.arg0, context)', 'eval_expr(expr.arg1, context)', 'eval_expr(expr.arg2, context)')}"""
             )
 
 
