@@ -42,3 +42,18 @@ def test_float():
 def test_complex():
     with pytest.raises(NotImplementedError):
         complex(implicit_lambda._)
+
+
+def test_len():
+    with pytest.raises(NotImplementedError):
+        len(implicit_lambda._)
+
+
+def test_bool():
+    with pytest.raises(NotImplementedError):
+        bool(implicit_lambda._)
+
+
+def test_contains():
+    with pytest.raises(NotImplementedError):
+        None in implicit_lambda._

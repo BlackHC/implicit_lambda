@@ -243,6 +243,16 @@ class LambdaDSL:
     def __float__(self):
         raise NotImplementedError("implicit_lambda does not support __index__(). Use the wrapped `float._` instead!")
 
+    def __bool__(self):
+        raise NotImplementedError("implicit_lambda does not support __bool__(). Use the wrapped `bool._` instead!")
+
+    def __len__(self):
+        raise NotImplementedError("implicit_lambda does not support __len__(). Use the wrapped `len._` instead!")
+
+    # TODO: add a helper function or method instead?
+    def __contains__(self, other):
+        raise NotImplementedError("implicit_lambda does not support __contains__().")
+
 
 def index(obj, key):
     """Index into a resolved object `obj` with `key` that can be an expression."""
