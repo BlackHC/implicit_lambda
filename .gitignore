@@ -1,0 +1,9 @@
+/.hypothesis/
+__pycache__/
+/.vscode/
+workspace.code-workspace
+.env
+.eggs/
+*.egg-info
+dist/
+build/
