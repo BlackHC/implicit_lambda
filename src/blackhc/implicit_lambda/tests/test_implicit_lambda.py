@@ -94,6 +94,16 @@ def test_unwrap_literals():
     assert_code([_ + 1], "lambda x: [(x + 1)]")
     assert_code({_ + 1}, "lambda x: {(x + 1)}")
     assert_code({_ + 1: _ + 1}, "lambda x: {(x + 1):(x + 1)}")
+    assert_code((_ + 1,), "lambda x: ((x + 1),)")
+
+    assert_code((), "lambda : ()")
+
+    assert_code(slice(1, 5), "lambda : slice(1, 5, None)")
+    assert_code(slice(1, _), "lambda x: slice(1, x, None)")
+    assert_code(slice(1, 5, 1), "lambda : slice(1, 5, 1)")
+    assert_code(slice(1, 5, _), "lambda x: slice(1, 5, x)")
+
+    assert_code(_[1:5:_], "lambda x: x[slice(1, 5, x)]")
 
 
 def test_kwarg():

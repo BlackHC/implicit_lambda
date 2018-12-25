@@ -43,6 +43,10 @@ def collect_args(expr, args: set, kwargs: set):
     elif isinstance(expr, set):
         for item in expr:
             collect_args(item, args, kwargs)
+    elif isinstance(expr, slice):
+        collect_args(expr.start, args, kwargs)
+        collect_args(expr.stop, args, kwargs)
+        collect_args(expr.step, args, kwargs)
 
 
 @dataclass
@@ -113,6 +117,9 @@ def codegen_expr(expr, context: Context):
 
     if isinstance(expr, set):
         return f'{{{",".join([codegen_expr(item, context) for item in expr])}}}'
+
+    if isinstance(expr, slice):
+        return f"slice({codegen_expr(expr.start, context)}, {codegen_expr(expr.stop, context)}, {codegen_expr(expr.step, context)})"
 
     return add_ref(context, expr)
 

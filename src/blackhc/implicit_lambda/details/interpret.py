@@ -192,6 +192,9 @@ def eval_expr(expr, context):
     if isinstance(expr, set):
         return {eval_expr(item, context) for item in expr}
 
+    if isinstance(expr, slice):
+        return slice(eval_expr(expr.start, context), eval_expr(expr.stop, context), eval_expr(expr.step, context))
+
     return expr
 
 

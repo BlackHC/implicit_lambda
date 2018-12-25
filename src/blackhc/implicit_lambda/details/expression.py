@@ -97,7 +97,12 @@ class OptionalArgOps(Enum):
     POW_3 = OpInfo("__pow__", 3, "pow({}, {}, {})")
 
 
-# TODO: index, complex, int, float!!! and slices!
+class SpecialOps(Enum):
+    INT = OpInfo("", 1, "int({})")
+    FLOAT = OpInfo("", 1, "float({})")
+    COMPLEX = OpInfo("", 1, "complex({})")
+    STR = OpInfo("", 1, "str({})")
+    REPR = OpInfo("", 1, "repr({})")
 
 
 @dataclass(frozen=True)

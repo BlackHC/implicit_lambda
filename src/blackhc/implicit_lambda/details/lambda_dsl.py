@@ -18,6 +18,9 @@ def get_expr(expr):
         return {get_expr(key): get_expr(value) for key, value in expr.items()}
     if isinstance(expr, set):
         return {get_expr(item) for item in expr}
+    if isinstance(expr, slice):
+        return slice(get_expr(expr.start), get_expr(expr.stop), get_expr(expr.step))
+
     return expr
 
 
@@ -27,8 +30,9 @@ class LambdaDSL:
     def __init__(self, expr):
         _exprs[id(self)] = expr
 
-    def __dell__(self):
-        del _exprs[id(self)]
+    def __del__(self):
+        if _exprs:
+            del _exprs[id(self)]
 
     def __hash__(self):
         return id(self)
@@ -226,6 +230,18 @@ class LambdaDSL:
         return LambdaDSL(
             expression.OpExpression(expression.OptionalArgOps.ROUND_2, 2, get_expr(self), get_expr(ndigits), None)
         )
+
+    def __int__(self):
+        raise NotImplementedError("implicit_lambda does not support int(). Use the wrapped `int._` instead!")
+
+    def __index__(self):
+        raise NotImplementedError("implicit_lambda does not support __index__(). Use the wrapped builtins instead!")
+
+    def __complex__(self):
+        raise NotImplementedError("implicit_lambda does not support complex(). Use the wrapped `complex._` instead!")
+
+    def __float__(self):
+        raise NotImplementedError("implicit_lambda does not support __index__(). Use the wrapped `float._` instead!")
 
 
 def index(obj, key):

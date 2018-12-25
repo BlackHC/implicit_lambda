@@ -34,7 +34,9 @@ def test_exprs(op, x: int, y: int):
 
 
 @hypothesis.given(x=strategies.integers(-1024, 1024), y=strategies.integers(-63, 63))
-@pytest.mark.parametrize("op", expression.Ops - set([expression.ArithmeticOps.MATMUL, expression.ArithmeticOps.RMATMUL]))
+@pytest.mark.parametrize(
+    "op", expression.Ops - set([expression.ArithmeticOps.MATMUL, expression.ArithmeticOps.RMATMUL])
+)
 def test_implicit_lambdas(op: expression.Ops, x: int, y: int):
     code = op.value.template.format("x", "y")
 
