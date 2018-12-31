@@ -113,14 +113,14 @@ def test_kwarg():
 
 
 def test_arg():
-    assert_code(arg(2, 'xx'), "lambda __unused0, __unused1, xx: xx")
-    assert_code(arg(0, 'y'), "lambda y: y")
-    assert_code(arg(0, 'z'), "lambda z, __unused1: z", required_args=2)
+    assert_code(arg(2, "xx"), "lambda __unused0, __unused1, xx: xx")
+    assert_code(arg(0, "y"), "lambda y: y")
+    assert_code(arg(0, "z"), "lambda z, __unused1: z", required_args=2)
 
 
 def test_arg_collision_fails():
     with pytest.raises(SyntaxError):
-        to_lambda(arg(0, 'x') + arg(0, 'y'))
+        to_lambda(arg(0, "x") + arg(0, "y"))
 
 
 def test_auto_lambda():

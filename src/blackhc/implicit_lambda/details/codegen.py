@@ -8,15 +8,17 @@ from blackhc.implicit_lambda.details import expression
 
 @dataclass
 class CollectArgsContext:
-    __slots__ = ('args', 'kwargs')
+    __slots__ = ("args", "kwargs")
     args: dict
     kwargs: set
 
     def add_arg(self, accessor: expression.ArgsAccessor):
         if accessor.key in self.args:
             if self.args[accessor.key] != accessor.name:
-                raise SyntaxError(f'Argument name mismatch: trying to use argument accessor {accessor}'
-                                  f'when the argument name has already been bound to {self.args[accessor.key]}!')
+                raise SyntaxError(
+                    f"Argument name mismatch: trying to use argument accessor {accessor}"
+                    f"when the argument name has already been bound to {self.args[accessor.key]}!"
+                )
         else:
             self.args[accessor.key] = accessor.name
 

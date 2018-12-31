@@ -124,7 +124,7 @@ class KwArgsAccessor(Expression):
 
 @dataclass(frozen=True)
 class ArgsAccessor(Expression):
-    __slots__ = ("key","name")
+    __slots__ = ("key", "name")
     key: int
     name: str
 
