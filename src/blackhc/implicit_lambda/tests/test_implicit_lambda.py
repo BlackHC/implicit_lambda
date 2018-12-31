@@ -91,31 +91,36 @@ def assert_code(obj, code, required_args=None):
 
 
 def test_unwrap_literals():
-    assert_code([_ + 1], "lambda x: [(x + 1)]")
-    assert_code({_ + 1}, "lambda x: {(x + 1)}")
-    assert_code({_ + 1: _ + 1}, "lambda x: {(x + 1):(x + 1)}")
-    assert_code((_ + 1,), "lambda x: ((x + 1),)")
+    assert_code([_ + 1], "lambda _: [(_ + 1)]")
+    assert_code({_ + 1}, "lambda _: {(_ + 1)}")
+    assert_code({_ + 1: _ + 1}, "lambda _: {(_ + 1):(_ + 1)}")
+    assert_code((_ + 1,), "lambda _: ((_ + 1),)")
 
     assert_code((), "lambda : ()")
 
     assert_code(slice(1, 5), "lambda : slice(1, 5, None)")
-    assert_code(slice(1, _), "lambda x: slice(1, x, None)")
+    assert_code(slice(1, _), "lambda _: slice(1, _, None)")
     assert_code(slice(1, 5, 1), "lambda : slice(1, 5, 1)")
-    assert_code(slice(1, 5, _), "lambda x: slice(1, 5, x)")
+    assert_code(slice(1, 5, _), "lambda _: slice(1, 5, _)")
 
-    assert_code(_[1:5:_], "lambda x: x[slice(1, 5, x)]")
+    assert_code(_[1:5:_], "lambda _: _[slice(1, 5, _)]")
 
 
 def test_kwarg():
     assert_code(kw("x"), "lambda **kwargs: kwargs['x']")
     assert_code(kw("x") + kw("y"), "lambda **kwargs: (kwargs['x'] + kwargs['y'])")
-    assert_code(kw("x") + x, "lambda a, **kwargs: (kwargs['x'] + a)")
+    assert_code(kw("x") + x, "lambda x, **kwargs: (kwargs['x'] + x)")
 
 
 def test_arg():
-    assert_code(arg(2), "lambda __unused0, __unused1, x: x")
-    assert_code(arg(0), "lambda x: x")
-    assert_code(arg(0), "lambda x, __unused1: x", required_args=2)
+    assert_code(arg(2, 'xx'), "lambda __unused0, __unused1, xx: xx")
+    assert_code(arg(0, 'y'), "lambda y: y")
+    assert_code(arg(0, 'z'), "lambda z, __unused1: z", required_args=2)
+
+
+def test_arg_collision_fails():
+    with pytest.raises(SyntaxError):
+        to_lambda(arg(0, 'x') + arg(0, 'y'))
 
 
 def test_auto_lambda():

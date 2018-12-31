@@ -38,7 +38,7 @@ class LambdaDSL:
         return id(self)
 
     def __repr__(self):
-        lambda_code, refs = codegen.generate_code(get_expr(self))
+        lambda_code, refs = codegen.generate_lambda(get_expr(self))
         return f"<{type(self).__qualname__}: {lambda_code} @ {refs}>"
 
     def __call__(self, *args, **kwargs):
@@ -269,9 +269,9 @@ def kw(keyword: str):
     return LambdaDSL(expression.KwArgsAccessor(keyword))
 
 
-def arg(pos: int):
+def arg(pos: int, name: str):
     """Placeholder for a positional argument."""
-    return LambdaDSL(expression.ArgsAccessor(pos))
+    return LambdaDSL(expression.ArgsAccessor(pos, name))
 
 
 def literal(obj: object):

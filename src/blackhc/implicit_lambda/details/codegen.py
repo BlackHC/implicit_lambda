@@ -6,51 +6,75 @@ from dataclasses import dataclass
 from blackhc.implicit_lambda.details import expression
 
 
-def collect_args(expr, args: set, kwargs: set):
+@dataclass
+class CollectArgsContext:
+    __slots__ = ('args', 'kwargs')
+    args: dict
+    kwargs: set
+
+    def add_arg(self, accessor: expression.ArgsAccessor):
+        if accessor.key in self.args:
+            if self.args[accessor.key] != accessor.name:
+                raise SyntaxError(f'Argument name mismatch: trying to use argument accessor {accessor}'
+                                  f'when the argument name has already been bound to {self.args[accessor.key]}!')
+        else:
+            self.args[accessor.key] = accessor.name
+
+    def add_kwarg(self, accessor: expression.KwArgsAccessor):
+        self.kwargs.add(accessor.key)
+
+
+def collect_args_(expr, context: CollectArgsContext):
     if expr is None:
         return
 
     if isinstance(expr, expression.Expression):
         if isinstance(expr, expression.AccessorExpression):
-            collect_args(expr.target, args, kwargs)
-            collect_args(expr.key, args, kwargs)
+            collect_args_(expr.target, context)
+            collect_args_(expr.key, context)
         elif isinstance(expr, expression.OpExpression):
-            collect_args(expr.arg0, args, kwargs)
-            collect_args(expr.arg1, args, kwargs)
-            collect_args(expr.arg2, args, kwargs)
+            collect_args_(expr.arg0, context)
+            collect_args_(expr.arg1, context)
+            collect_args_(expr.arg2, context)
         elif isinstance(expr, expression.CallExpression):
-            collect_args(expr.target, args, kwargs)
-            collect_args(expr.args, args, kwargs)
-            collect_args(expr.kwargs, args, kwargs)
+            collect_args_(expr.target, context)
+            collect_args_(expr.args, context)
+            collect_args_(expr.kwargs, context)
         elif isinstance(expr, expression.ArgsAccessor):
-            args.add(expr.key)
+            context.add_arg(expr)
         elif isinstance(expr, expression.KwArgsAccessor):
-            kwargs.add(expr.key)
+            context.add_kwarg(expr)
         elif isinstance(expr, expression.LiteralExpression):
             pass
         else:
             raise NotImplementedError(type(expr))
     elif isinstance(expr, tuple):
         for item in expr:
-            collect_args(item, args, kwargs)
+            collect_args_(item, context)
     elif isinstance(expr, list):
         for item in expr:
-            collect_args(item, args, kwargs)
+            collect_args_(item, context)
     elif isinstance(expr, dict):
         for key, value in expr.items():
-            collect_args(key, args, kwargs)
-            collect_args(value, args, kwargs)
+            collect_args_(key, context)
+            collect_args_(value, context)
     elif isinstance(expr, set):
         for item in expr:
-            collect_args(item, args, kwargs)
+            collect_args_(item, context)
     elif isinstance(expr, slice):
-        collect_args(expr.start, args, kwargs)
-        collect_args(expr.stop, args, kwargs)
-        collect_args(expr.step, args, kwargs)
+        collect_args_(expr.start, context)
+        collect_args_(expr.stop, context)
+        collect_args_(expr.step, context)
+
+
+def collect_args(expr, context: CollectArgsContext = None) -> CollectArgsContext:
+    context = context or CollectArgsContext(args={}, kwargs=set())
+    collect_args_(expr, context)
+    return context
 
 
 @dataclass
-class Context:
+class CodegenContext:
     __slots__ = ("refs", "args", "kwargs")
     refs: dict
     args: dict
@@ -63,7 +87,7 @@ def add_ref(context, value):
     return ref_name
 
 
-def codegen_expr(expr, context: Context):
+def codegen_expr(expr, context: CodegenContext):
     if expr is None:
         return repr(None)
 
@@ -124,42 +148,23 @@ def codegen_expr(expr, context: Context):
     return add_ref(context, expr)
 
 
-def generate_code(expr, required_args=None):
+def generate_lambda(expr, required_args=None):
     if required_args is None:
         required_args = 0
 
-    args_set = set()
-    kwargs_set = set()
-    collect_args(expr, args_set, kwargs_set)
+    collect_args_context = collect_args(expr)
 
-    context = Context({}, {}, {})
+    context = CodegenContext({}, {}, {})
 
-    context.kwargs = {kwarg: f"kwargs[{kwarg!r}]" for kwarg in kwargs_set}
+    context.args = collect_args_context.args
+    context.kwargs = {kwarg: f"kwargs[{kwarg!r}]" for kwarg in collect_args_context.kwargs}
 
-    specific_args = False
-    if len(args_set) < 4:
-        for available_args in [
-            ("x", "y", "z", "w"),
-            ("a", "b", "c", "d"),
-            ("i", "j", "k", "l"),
-            ("arg0", "arg1", "arg2", "arg3"),
-        ]:
-            if not set(available_args).intersection(kwargs_set):
-                specific_args = True
-                context.args = {j: available_args[i] for i, j in enumerate(sorted(args_set))}
-                break
-    if not specific_args:
-        context.args = {i: f"args[{i}]" for i in args_set}
-
-    required_args = max(max(args_set, default=-1) + 1, required_args)
+    required_args = max(max(context.args.keys(), default=-1) + 1, required_args)
     context.refs = {}
     expr_code = codegen_expr(expr, context)
 
     params = []
-    if specific_args:
-        params.extend(context.args.get(i, f"__unused{i}") for i in range(required_args))
-    else:
-        params.append("*args")
+    params.extend(context.args.get(i, f"__unused{i}") for i in range(required_args))
 
     if context.kwargs:
         params.append("**kwargs")
@@ -172,7 +177,7 @@ def generate_code(expr, required_args=None):
 def compile(expr, required_args=None):
     """Compiles `expr` into a Python lambda that takes at least `required_args` positional arguments."""
 
-    lambda_code, refs = generate_code(expr, required_args=required_args)
+    lambda_code, refs = generate_lambda(expr, required_args=required_args)
 
     func_globals = dict(refs)
     func_globals["__builtins__"] = builtins

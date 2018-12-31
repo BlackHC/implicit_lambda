@@ -171,7 +171,7 @@ def eval_expr(expr, context):
             return context.kwargs[expr.key]
 
         if isinstance(expr, expression.ArgsAccessor):
-            # NOTE: they key is not an expression but a literal
+            # NOTE: the key is not an expression but a literal
             # This makes it easier to optimize.
             return context.args[expr.key]
 
