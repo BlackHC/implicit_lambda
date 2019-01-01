@@ -3,12 +3,13 @@
 import math
 from dataclasses import dataclass
 from blackhc.implicit_lambda.details import expression
+from blackhc.implicit_lambda.details import collect_args
 
 
 @dataclass
 class Context:
     __slots__ = ("args", "kwargs")
-    args: list
+    args: dict
     kwargs: dict
 
 
@@ -168,15 +169,30 @@ def eval_expr(expr, context):
         if isinstance(expr, expression.KwArgsAccessor):
             # NOTE: the key is not an expression but a literal
             # This makes it easier to optimize.
-            return context.kwargs[expr.key]
+            return context.kwargs[expr.name]
 
         if isinstance(expr, expression.ArgsAccessor):
             # NOTE: the key is not an expression but a literal
             # This makes it easier to optimize.
-            return context.args[expr.key]
+            return context.args[expr.name]
 
         if isinstance(expr, expression.LiteralExpression):
             return expr.literal
+
+        if isinstance(expr, expression.LambdaExpression):
+            return lambda *args_values, **kwargs_values: eval_expr(
+                expr.expr,
+                Context(
+                    {
+                        name: args_values[order] if order in args_values else expr.defaults[name]
+                        for order, name in enumerate(expr.args)
+                    },
+                    {
+                        name: kwargs_values[name] if name in kwargs_values else expr.defaults[name]
+                        for name in expr.kwargs
+                    },
+                ),
+            )
 
         raise NotImplementedError(type(expr))
 
@@ -198,6 +214,9 @@ def eval_expr(expr, context):
     return expr
 
 
-def to_lambda(expr: expression.Expression):
+def to_lambda(expr: expression.Expression, *, required_args=None, ordering=None):
     """Convert `expr` to a Python lambda without compiling it. This is slow!"""
-    return lambda *args, **kwargs: eval_expr(expr, Context(args, kwargs))
+    computed_args = collect_args.compute_args(expr, required_args=required_args, ordering=ordering)
+
+    lambda_expr = expression.LambdaExpression(expr, computed_args.args, computed_args.kwargs, {})
+    return eval_expr(lambda_expr, Context({}, {}))

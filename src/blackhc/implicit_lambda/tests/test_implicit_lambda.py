@@ -3,7 +3,7 @@ import pytest
 from dataclasses import dataclass
 
 from blackhc.implicit_lambda.builtins import next
-from blackhc.implicit_lambda import _, x, z, to_lambda, wrap, get_expr, literal, kw, arg, auto_lambda
+from blackhc.implicit_lambda import _, x, z, to_lambda, wrap, get_expr, literal, kw, arg, auto_lambda, call
 
 
 def test_index():
@@ -38,7 +38,7 @@ def test_nested_fields():
     assert expr_lambda(TestClass(TestClass(1))) == 1
 
 
-def test_call():
+def test_method_call():
     @dataclass
     class TestClass:
         field: object
@@ -91,31 +91,31 @@ def assert_code(obj, code, required_args=None):
 
 
 def test_unwrap_literals():
-    assert_code([_ + 1], "lambda _: [(_ + 1)]")
-    assert_code({_ + 1}, "lambda _: {(_ + 1)}")
-    assert_code({_ + 1: _ + 1}, "lambda _: {(_ + 1):(_ + 1)}")
-    assert_code((_ + 1,), "lambda _: ((_ + 1),)")
+    assert_code([_ + 1], "(lambda _: [(_ + 1)])")
+    assert_code({_ + 1}, "(lambda _: {(_ + 1)})")
+    assert_code({_ + 1: _ + 1}, "(lambda _: {(_ + 1):(_ + 1)})")
+    assert_code((_ + 1,), "(lambda _: ((_ + 1),))")
 
-    assert_code((), "lambda : ()")
+    assert_code((), "(lambda : ())")
 
-    assert_code(slice(1, 5), "lambda : slice(1, 5, None)")
-    assert_code(slice(1, _), "lambda _: slice(1, _, None)")
-    assert_code(slice(1, 5, 1), "lambda : slice(1, 5, 1)")
-    assert_code(slice(1, 5, _), "lambda _: slice(1, 5, _)")
+    assert_code(slice(1, 5), "(lambda : slice(1, 5, None))")
+    assert_code(slice(1, _), "(lambda _: slice(1, _, None))")
+    assert_code(slice(1, 5, 1), "(lambda : slice(1, 5, 1))")
+    assert_code(slice(1, 5, _), "(lambda _: slice(1, 5, _))")
 
-    assert_code(_[1:5:_], "lambda _: _[slice(1, 5, _)]")
+    assert_code(_[1:5:_], "(lambda _: _[slice(1, 5, _)])")
 
 
 def test_kwarg():
-    assert_code(kw("x"), "lambda **kwargs: kwargs['x']")
-    assert_code(kw("x") + kw("y"), "lambda **kwargs: (kwargs['x'] + kwargs['y'])")
-    assert_code(kw("x") + x, "lambda x, **kwargs: (kwargs['x'] + x)")
+    assert_code(kw("x"), "(lambda *, x: x)")
+    assert_code(kw("x") + kw("y"), "(lambda *, x, y: (x + y))")
+    assert_code(kw("y") + x, "(lambda x, *, y: (y + x))")
 
 
 def test_arg():
-    assert_code(arg(2, "xx"), "lambda __unused0, __unused1, xx: xx")
-    assert_code(arg(0, "y"), "lambda y: y")
-    assert_code(arg(0, "z"), "lambda z, __unused1: z", required_args=2)
+    assert_code(arg(2, "xx"), "(lambda __unused0, __unused1, xx: xx)")
+    assert_code(arg(0, "y"), "(lambda y: y)")
+    assert_code(arg(0, "z"), "(lambda z, __unused1: z)", required_args=2)
 
 
 def test_arg_collision_fails():
@@ -148,3 +148,10 @@ def test_id_hash():
 def test_expr_structural_equal_but_id_hash():
     assert get_expr(next._(_)) == get_expr(next._(_))
     assert hash(get_expr(next._(_))) != hash(get_expr(next._(_)))
+
+
+def test_call():
+    def f(x):
+        return x + 1
+
+    assert to_lambda(call(f, 1))() == 2

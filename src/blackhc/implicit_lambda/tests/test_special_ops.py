@@ -11,11 +11,11 @@ from blackhc.implicit_lambda.details import interpret
 
 
 def test_repr():
-    assert repr(implicit_lambda._ + 5) == "<LambdaDSL: lambda _: (_ + 5) @ {}>"
+    assert repr(implicit_lambda._ + 5) == "<LambdaDSL: (lambda _: (_ + 5)) @ {}>"
 
 
 def test_str():
-    assert repr(implicit_lambda._ + 5) == "<LambdaDSL: lambda _: (_ + 5) @ {}>"
+    assert repr(implicit_lambda._ + 5) == "<LambdaDSL: (lambda _: (_ + 5)) @ {}>"
 
 
 def test_index():

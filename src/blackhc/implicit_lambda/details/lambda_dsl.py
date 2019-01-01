@@ -10,6 +10,15 @@ def get_expr(expr):
     """Unwrap expr into an `expression.Expression`. Handle literals correctly."""
     if isinstance(expr, LambdaDSL):
         return _exprs[id(expr)]
+    if isinstance(expr, expression.Expression):
+        # Wrap Expressions in a literal, so you can pass them to methods (if you want).
+        # This is an extra step, so why this extra work?
+        # Locality: without this: `_.f(a)` might either compile to `lambda _: _.f(a)`
+        # or to `lambda _: _.f(...)` if a was an Expression.
+        # This also means that `to_lambda` will turn an Expression into a constant lambda.
+        # This means that glue code only operates on LambdaDSLs, which can be considered
+        # ephemeral.
+        return literal(expr)
     if isinstance(expr, tuple):
         return tuple(get_expr(item) for item in expr)
     if isinstance(expr, list):
@@ -36,6 +45,9 @@ class LambdaDSL:
 
     def __hash__(self):
         return id(self)
+
+    def __str__(self):
+        return LambdaDSL.__repr__(self)
 
     def __repr__(self):
         lambda_code, refs = codegen.generate_lambda(get_expr(self))
@@ -280,3 +292,8 @@ def literal(obj: object):
     This is mainly to avoid descending into big dictionaries or lists by accident.
     """
     return LambdaDSL(expression.LiteralExpression(obj))
+
+
+def inline_expr(expr: expression.Expression):
+    """Wrap an expression so that it can become part of a LambdaDSL expression (instead of being treated as literal)."""
+    return LambdaDSL(expr)

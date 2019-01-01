@@ -118,14 +118,14 @@ class OpExpression(Expression):
 
 @dataclass(frozen=True)
 class KwArgsAccessor(Expression):
-    __slots__ = ("key",)
-    key: str
+    __slots__ = ("name",)
+    name: str
 
 
 @dataclass(frozen=True)
 class ArgsAccessor(Expression):
-    __slots__ = ("key", "name")
-    key: int
+    __slots__ = ("order", "name")
+    order: int
     name: str
 
 
@@ -143,3 +143,13 @@ class LiteralExpression(Expression):
     __slots__ = ["literal"]
     __hash__ = id_hash
     literal: object
+
+
+@dataclass(frozen=True)
+class LambdaExpression(Expression):
+    __slots__ = ["expr", "args", "kwargs", "defaults"]
+    __hash__ = id_hash
+    expr: Expression
+    args: tuple
+    kwargs: tuple
+    defaults: dict

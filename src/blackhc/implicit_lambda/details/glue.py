@@ -20,7 +20,7 @@ def to_lambda(expr, required_args=None):
 
 def call(func: callable, *args, **kwargs):
     """Calls `func` with `args` and `kwargs` that can contain expressions."""
-    return lambda_dsl.call(to_lambda(callable, *args, **kwargs))
+    return lambda_dsl.call(to_lambda(func), *args, **kwargs)
 
 
 def wrap(func):
