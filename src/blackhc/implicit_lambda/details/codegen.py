@@ -105,23 +105,25 @@ def generate_lambda(expr, required_args=None, ordering=None):
 
     context = CodegenContext({})
     lambda_code = codegen_expr(lambda_expr, context)
-    return lambda_code, context.refs
+    return lambda_code, context.refs, computed_args
 
 
 def compile(expr, required_args=None, ordering=None):
     """Compiles `expr` into a Python lambda that takes at least `required_args` positional arguments."""
 
-    lambda_code, refs = generate_lambda(expr, required_args=required_args, ordering=ordering)
+    lambda_code, refs, computed_args = generate_lambda(expr, required_args=required_args, ordering=ordering)
 
     func_globals = dict(refs)
     func_globals["__builtins__"] = builtins
     func_globals["math"] = math
     if __debug__:
         func_globals["__refs"] = refs
-        func_code = f'type({lambda_code!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_code}), refs=__refs, code={lambda_code!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'
+        func_code = f'type({lambda_code!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_code}), args={computed_args.args!r}, kwargs={computed_args.kwargs!r}, refs=__refs, code={lambda_code!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'
         func = eval(func_code, func_globals, {})
     else:
         func = eval(lambda_code, func_globals, {})
         func.code = lambda_code
         func.refs = refs
+        func.args = computed_args.args
+        func.kwargs = computed_args.kwargs
     return func

@@ -50,7 +50,7 @@ class LambdaDSL:
         return LambdaDSL.__repr__(self)
 
     def __repr__(self):
-        lambda_code, refs = codegen.generate_lambda(get_expr(self))
+        lambda_code, refs, computed_args = codegen.generate_lambda(get_expr(self))
         return f"<{type(self).__qualname__}: {lambda_code} @ {refs}>"
 
     def __call__(self, *args, **kwargs):
@@ -297,3 +297,7 @@ def literal(obj: object):
 def inline_expr(expr: expression.Expression):
     """Wrap an expression so that it can become part of a LambdaDSL expression (instead of being treated as literal)."""
     return LambdaDSL(expr)
+
+
+def is_lambda_dsl(obj):
+    return isinstance(obj, LambdaDSL)
