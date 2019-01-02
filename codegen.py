@@ -111,8 +111,8 @@ def auto_lambda_builtins():
 
     print(
         """
-filter = functools.update_wrapper(lambda arg0, *args, **kwargs: builtins.filter(to_lambda(arg0, required_args=1) if arg0 is not None else None, *args, **kwargs), builtins.filter)
-filter._ = functools.update_wrapper(lambda arg0, *args, **kwargs: wrap(builtins.filter)(to_lambda(arg0, required_args=1) if arg0 is not None else None, *args, **kwargs), builtins.filter)
+filter = functools.update_wrapper(lambda arg0, *args, **kwargs: builtins.filter(to_lambda(arg0, args_resolver=args_resolver.flexible_args(required_args=1)) if arg0 is not None else None, *args, **kwargs), builtins.filter)
+filter._ = functools.update_wrapper(lambda arg0, *args, **kwargs: wrap(builtins.filter)(to_lambda(arg0, args_resolver=args_resolver.flexible_args(required_args=1)) if arg0 is not None else None, *args, **kwargs), builtins.filter)
     """
     )
 
@@ -126,8 +126,8 @@ def auto_lambda_functools():
     # auto_lambda_static_code('reduce', module='functools', args=[True])
     print(
         """
-reduce = functools.update_wrapper(lambda arg0, *args, **kwargs: functools.reduce(to_lambda(arg0, required_args=2), *args, **kwargs), functools.reduce)
-reduce._ = functools.update_wrapper(lambda arg0, *args, **kwargs: wrap(functools.reduce)(to_lambda(arg0, required_args=2), *args, **kwargs), functools.reduce)
+reduce = functools.update_wrapper(lambda arg0, *args, **kwargs: functools.reduce(to_lambda(arg0, args_resolver=args_resolver.flexible_args(required_args=2)), *args, **kwargs), functools.reduce)
+reduce._ = functools.update_wrapper(lambda arg0, *args, **kwargs: wrap(functools.reduce)(to_lambda(arg0, args_resolver=args_resolver.flexible_args(required_args=2)), *args, **kwargs), functools.reduce)
     """
     )
 
@@ -159,5 +159,12 @@ accumulate = functools.update_wrapper(lambda arg0, arg1=operator.add, *args, **k
 accumulate._ = functools.update_wrapper(lambda arg0, arg1=operator.add, *args, **kwargs: wrap(itertools.accumulate)(arg0, to_lambda(arg1), *args, **kwargs), itertools.accumulate)
 groupby = functools.update_wrapper(lambda arg0, arg1=None, *args, **kwargs: itertools.groupby(arg0, to_lambda(arg1) if arg1 else None, *args, **kwargs), itertools.groupby)
 groupby._ = functools.update_wrapper(lambda arg0, arg1=None, *args, **kwargs: wrap(itertools.groupby)(arg0, to_lambda(arg1) if arg1 else None, *args, **kwargs), itertools.groupby)
+
+chain.from_iterable = functools.update_wrapper(
+    lambda *args, **kwargs: itertools.chain.from_iterable(*args, **kwargs), itertools.chain.from_iterable
+)
+chain.from_iterable._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(itertools.chain.from_iterable)(*args, **kwargs), itertools.chain.from_iterable
+)
     """
     )

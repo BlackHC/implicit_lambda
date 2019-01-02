@@ -214,9 +214,8 @@ def eval_expr(expr, context):
     return expr
 
 
-def to_lambda(expr: expression.Expression, *, required_args=None, ordering=None):
+def to_lambda(expr: expression.Expression, *, args_resolver=None):
     """Convert `expr` to a Python lambda without compiling it. This is slow!"""
-    computed_args = collect_args.compute_args(expr, required_args=required_args, ordering=ordering)
-
+    computed_args = collect_args.compute_args(expr, args_resolver=args_resolver)
     lambda_expr = expression.LambdaExpression(expr, computed_args.args, computed_args.kwargs, {})
     return eval_expr(lambda_expr, Context({}, {}))

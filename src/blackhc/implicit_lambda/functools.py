@@ -2,6 +2,7 @@
 
 import functools
 from blackhc.implicit_lambda import wrap, to_lambda
+from blackhc.implicit_lambda import args_resolver
 
 partial = functools.update_wrapper(
     lambda arg0, *args, **kwargs: functools.partial(to_lambda(arg0), *args, **kwargs), functools.partial
@@ -31,9 +32,14 @@ wraps._ = functools.update_wrapper(
 )
 
 reduce = functools.update_wrapper(
-    lambda arg0, *args, **kwargs: functools.reduce(to_lambda(arg0, required_args=2), *args, **kwargs), functools.reduce
+    lambda arg0, *args, **kwargs: functools.reduce(
+        to_lambda(arg0, args_resolver=args_resolver.flexible_args(required_args=2)), *args, **kwargs
+    ),
+    functools.reduce,
 )
 reduce._ = functools.update_wrapper(
-    lambda arg0, *args, **kwargs: wrap(functools.reduce)(to_lambda(arg0, required_args=2), *args, **kwargs),
+    lambda arg0, *args, **kwargs: wrap(functools.reduce)(
+        to_lambda(arg0, args_resolver=args_resolver.flexible_args(required_args=2)), *args, **kwargs
+    ),
     functools.reduce,
 )

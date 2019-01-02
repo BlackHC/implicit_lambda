@@ -3,6 +3,7 @@
 import builtins
 import functools
 from blackhc.implicit_lambda import wrap, to_lambda
+from blackhc.implicit_lambda import args_resolver
 
 abs = functools.update_wrapper(lambda *args, **kwargs: builtins.abs(*args, **kwargs), builtins.abs)
 abs._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.abs)(*args, **kwargs), builtins.abs)
@@ -154,13 +155,17 @@ map._ = functools.update_wrapper(
 
 filter = functools.update_wrapper(
     lambda arg0, *args, **kwargs: builtins.filter(
-        to_lambda(arg0, required_args=1) if arg0 is not None else None, *args, **kwargs
+        to_lambda(arg0, args_resolver=args_resolver.flexible_args(required_args=1)) if arg0 is not None else None,
+        *args,
+        **kwargs
     ),
     builtins.filter,
 )
 filter._ = functools.update_wrapper(
     lambda arg0, *args, **kwargs: wrap(builtins.filter)(
-        to_lambda(arg0, required_args=1) if arg0 is not None else None, *args, **kwargs
+        to_lambda(arg0, args_resolver=args_resolver.flexible_args(required_args=1)) if arg0 is not None else None,
+        *args,
+        **kwargs
     ),
     builtins.filter,
 )

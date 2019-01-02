@@ -95,35 +95,32 @@ def codegen_expr(expr, context: CodegenContext):
     return add_ref(context, expr)
 
 
-def generate_lambda(expr, required_args=None, ordering=None):
-    if required_args is None:
-        required_args = 0
+def generate_lambda(expr, args_resolver=None):
+    resolved_args = collect_args.compute_args(expr, args_resolver=args_resolver)
 
-    computed_args = collect_args.compute_args(expr, required_args=required_args, ordering=ordering)
-
-    lambda_expr = expression.LambdaExpression(expr, computed_args.args, computed_args.kwargs, {})
+    lambda_expr = expression.LambdaExpression(expr, resolved_args.args, resolved_args.kwargs, {})
 
     context = CodegenContext({})
     lambda_code = codegen_expr(lambda_expr, context)
-    return lambda_code, context.refs, computed_args
+    return lambda_code, context.refs, resolved_args
 
 
-def compile(expr, required_args=None, ordering=None):
+def compile(expr, args_resolver=None):
     """Compiles `expr` into a Python lambda that takes at least `required_args` positional arguments."""
 
-    lambda_code, refs, computed_args = generate_lambda(expr, required_args=required_args, ordering=ordering)
+    lambda_code, refs, resolved_args = generate_lambda(expr, args_resolver=args_resolver)
 
     func_globals = dict(refs)
     func_globals["__builtins__"] = builtins
     func_globals["math"] = math
     if __debug__:
         func_globals["__refs"] = refs
-        func_code = f'type({lambda_code!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_code}), args={computed_args.args!r}, kwargs={computed_args.kwargs!r}, refs=__refs, code={lambda_code!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'
+        func_code = f'type({lambda_code!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_code}), args={resolved_args.args!r}, kwargs={resolved_args.kwargs!r}, refs=__refs, code={lambda_code!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'
         func = eval(func_code, func_globals, {})
     else:
         func = eval(lambda_code, func_globals, {})
         func.code = lambda_code
         func.refs = refs
-        func.args = computed_args.args
-        func.kwargs = computed_args.kwargs
+        func.args = resolved_args.args
+        func.kwargs = resolved_args.kwargs
     return func

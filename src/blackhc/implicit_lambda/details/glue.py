@@ -4,7 +4,7 @@ from blackhc.implicit_lambda.details import lambda_dsl
 from blackhc.implicit_lambda.details import codegen
 
 
-def to_lambda(expr, required_args=None, ordering=None):
+def to_lambda(expr, *, args_resolver=None):
     """Convert expr into a Python lambda.
 
     If `expr` is an implicit lambda or literal compile it into a Python lambda.
@@ -17,7 +17,7 @@ def to_lambda(expr, required_args=None, ordering=None):
         # Assume that this a callable that we'd like to use.
         return expr
 
-    return codegen.compile(lambda_dsl.get_expr(expr), required_args=required_args, ordering=ordering)
+    return codegen.compile(lambda_dsl.get_expr(expr), args_resolver=args_resolver)
 
 
 def call(func: callable, *args, **kwargs):

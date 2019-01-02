@@ -1,74 +1,26 @@
 """Collect all positional arguments and keyword arguments."""
-import collections
 from dataclasses import dataclass
 import typing
 
 from blackhc.implicit_lambda.details import expression
+from blackhc.implicit_lambda.args_resolver import CollectedArgs, ResolvedArgs, strict_resolver
 
 
-@dataclass(frozen=True)
-class ComputedArgs:
-    args: tuple
-    kwargs: tuple
+def add_arg(context: CollectedArgs, accessor: expression.ArgsAccessor):
+    order = accessor.order
+    if order not in context.args:
+        s = context.args[order] = set()
+    else:
+        s = context.args[order]
+    s.add(accessor.name)
 
 
-@dataclass(frozen=True)
-class CollectArgsContext:
-    __slots__ = ("args", "kwargs")
-    args: typing.Dict[int, typing.Set]
-    kwargs: list
-
-    def add_arg(self, accessor: expression.ArgsAccessor):
-        order = accessor.order
-        if order not in self.args:
-            s = self.args[order] = set()
-        else:
-            s = self.args[order]
-        s.add(accessor.name)
-
-    def add_kwarg(self, accessor: expression.KwArgsAccessor):
-        if accessor.name not in self.kwargs:
-            self.kwargs.append(accessor.name)
+def add_kwarg(context: CollectedArgs, accessor: expression.KwArgsAccessor):
+    if accessor.name not in context.kwargs:
+        context.kwargs.append(accessor.name)
 
 
-def resolve_args(args: typing.Dict[int, typing.Set], ordering: tuple = None) -> dict:
-    ordering = ordering or ()
-
-    ordering_set = set(ordering)
-    max_order = max(args.keys(), default=-1)
-    order = 0
-
-    resolved_args = {}
-    while order <= max_order:
-        if order in args:
-            order_args = args[order]
-            if len(order_args) > 1:
-                if not (order_args <= ordering_set):
-                    raise SyntaxError(
-                        f"Got arguments: {args}. Cannot order {order_args}: only got ordering {ordering}!"
-                    )
-
-                min_index = min(ordering.index(arg) for arg in order_args)
-                min_arg = ordering[min_index]
-                resolved_args[order] = min_arg
-
-                order_args.remove(min_arg)
-                order_args |= args.get(order + 1, set())
-                args[order + 1] = order_args
-                max_order = max(max_order, order + 1)
-            else:
-                resolved_args[order] = order_args.pop()
-        order += 1
-
-    return resolved_args
-
-
-def get_arg_tuple(resolved_args: dict, required_args=None) -> tuple:
-    required_args = max(max(resolved_args.keys(), default=-1) + 1, required_args or 0)
-    return tuple(resolved_args.get(i, f"__unused{i}") for i in range(required_args))
-
-
-def collect_args_(expr, context: CollectArgsContext):
+def collect_args_(expr, context: CollectedArgs):
     if expr is None:
         return
 
@@ -85,9 +37,9 @@ def collect_args_(expr, context: CollectArgsContext):
             collect_args_(expr.args, context)
             collect_args_(expr.kwargs, context)
         elif isinstance(expr, expression.ArgsAccessor):
-            context.add_arg(expr)
+            add_arg(context, expr)
         elif isinstance(expr, expression.KwArgsAccessor):
-            context.add_kwarg(expr)
+            add_kwarg(context, expr)
         elif isinstance(expr, expression.LiteralExpression):
             pass
         else:
@@ -111,15 +63,16 @@ def collect_args_(expr, context: CollectArgsContext):
         collect_args_(expr.step, context)
 
 
-def collect_args(expr, context: CollectArgsContext = None) -> CollectArgsContext:
-    context = context or CollectArgsContext(args={}, kwargs=[])
+def collect_args(expr, context: CollectedArgs = None) -> CollectedArgs:
+    context = context or CollectedArgs(args={}, kwargs=[])
     collect_args_(expr, context)
     return context
 
 
-def compute_args(expr, *, required_args=None, ordering=None):
-    collect_args_context = collect_args(expr)
-    resolved_args = resolve_args(collect_args_context.args, ordering=ordering)
-    args = get_arg_tuple(resolved_args, required_args=required_args)
+def compute_args(expr, *, args_resolver=None):
+    args_resolver = args_resolver or strict_resolver
 
-    return ComputedArgs(args=args, kwargs=collect_args_context.kwargs)
+    context = collect_args(expr)
+    computed_args = args_resolver(context)
+
+    return computed_args

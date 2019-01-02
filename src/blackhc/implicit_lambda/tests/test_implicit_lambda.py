@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 from blackhc.implicit_lambda.builtins import next
 from blackhc.implicit_lambda import _, x, z, to_lambda, wrap, get_expr, literal, kw, arg, auto_lambda, call
+from blackhc.implicit_lambda import args_resolver
 
 
 def test_index():
@@ -87,7 +88,7 @@ def test_literal():
 
 
 def assert_code(obj, code, required_args=None):
-    assert to_lambda(obj, required_args=required_args).code == code
+    assert to_lambda(obj, args_resolver=args_resolver.flexible_args(required_args=required_args)).code == code
 
 
 def test_unwrap_literals():

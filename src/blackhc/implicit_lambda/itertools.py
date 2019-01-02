@@ -97,3 +97,10 @@ groupby._ = functools.update_wrapper(
     ),
     itertools.groupby,
 )
+
+chain.from_iterable = functools.update_wrapper(
+    lambda *args, **kwargs: itertools.chain.from_iterable(*args, **kwargs), itertools.chain.from_iterable
+)
+chain.from_iterable._ = functools.update_wrapper(
+    lambda *args, **kwargs: wrap(itertools.chain.from_iterable)(*args, **kwargs), itertools.chain.from_iterable
+)
