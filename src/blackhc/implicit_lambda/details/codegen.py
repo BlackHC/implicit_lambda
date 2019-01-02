@@ -101,25 +101,27 @@ def generate_lambda(expr, args_resolver=None):
     lambda_expr = expression.LambdaExpression(expr, resolved_args.args, resolved_args.kwargs, {})
 
     context = CodegenContext({})
-    lambda_code = codegen_expr(lambda_expr, context)
-    return lambda_code, context.refs, resolved_args
+    lambda_source = codegen_expr(lambda_expr, context)
+    return lambda_source, context.refs, resolved_args
 
 
 def compile(expr, args_resolver=None):
     """Compiles `expr` into a Python lambda that takes at least `required_args` positional arguments."""
 
-    lambda_code, refs, resolved_args = generate_lambda(expr, args_resolver=args_resolver)
+    lambda_source, refs, resolved_args = generate_lambda(expr, args_resolver=args_resolver)
 
     func_globals = dict(refs)
     func_globals["__builtins__"] = builtins
     func_globals["math"] = math
     if __debug__:
         func_globals["__refs"] = refs
-        func_code = f'type({lambda_code!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_code}), args={resolved_args.args!r}, kwargs={resolved_args.kwargs!r}, refs=__refs, code={lambda_code!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'
+        func_source = f'type({lambda_source!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_source}), args={resolved_args.args!r}, kwargs={resolved_args.kwargs!r}, refs=__refs, code={lambda_source!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'
+        func_code = builtins.compile(func_source, lambda_source, 'eval', 0, True)
         func = eval(func_code, func_globals, {})
     else:
-        func = eval(lambda_code, func_globals, {})
-        func.code = lambda_code
+        func_code = builtins.compile(lambda_source, lambda_source, 'eval', 0, True)
+        func = eval(func_code, func_globals, {})
+        func.code = lambda_source
         func.refs = refs
         func.args = resolved_args.args
         func.kwargs = resolved_args.kwargs

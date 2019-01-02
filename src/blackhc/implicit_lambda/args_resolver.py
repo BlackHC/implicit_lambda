@@ -51,6 +51,7 @@ def from_allowed_signatures(*signatures):
 
         args = set(itertools.chain.from_iterable(context.args.values()))
         for signature in signatures:
+            assert isinstance(signature, (tuple, list))
             if args <= set(signature):
                 return ResolvedArgs(signature, ())
 

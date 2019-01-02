@@ -59,7 +59,7 @@ def test_flexible_args_no_ordering_collision_fail():
 
 def test_from_allowed_signatures_accepts_valid():
     valid_context = CollectedArgs({0: set(("x", "y"))}, [])
-    assert from_allowed_signatures(("x"), ("y", "x"))(valid_context) == ResolvedArgs(("y", "x"), ())
+    assert from_allowed_signatures(("x",), ("y", "x"))(valid_context) == ResolvedArgs(("y", "x"), ())
 
 
 def test_from_allowed_signatures_rejects_invalid():

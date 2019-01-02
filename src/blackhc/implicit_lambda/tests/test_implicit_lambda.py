@@ -156,3 +156,9 @@ def test_call():
         return x + 1
 
     assert to_lambda(call(f, 1))() == 2
+
+
+def test_exception():
+    f = to_lambda(_.x == "Hello")
+    with pytest.raises(AttributeError):
+        f(10)
