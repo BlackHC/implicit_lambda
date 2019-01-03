@@ -2,9 +2,9 @@ import pytest
 
 from dataclasses import dataclass
 
-from blackhc.implicit_lambda.builtins import next
-from blackhc.implicit_lambda import _, x, z, to_lambda, wrap, get_expr, literal, kw, arg, auto_lambda, call
-from blackhc.implicit_lambda import args_resolver
+from implicit_lambda.builtins import next
+from implicit_lambda import _, x, z, to_lambda, wrap, get_expr, literal, kw, arg, auto_lambda, call
+from implicit_lambda import args_resolver
 
 
 def test_index():

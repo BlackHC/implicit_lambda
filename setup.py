@@ -12,7 +12,7 @@ with open(path.join(here, "README.md"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
-    name="blackhc.implicit_lambda",
+    name="implicit_lambda",
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
@@ -46,7 +46,7 @@ setup(
     keywords="tools lambda placeholder",
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=["blackhc.implicit_lambda", "blackhc.implicit_lambda.details", "blackhc.implicit_lambda.tests"],
+    packages=["implicit_lambda", "implicit_lambda.details", "implicit_lambda.tests"],
     package_dir={"": "src"},
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's

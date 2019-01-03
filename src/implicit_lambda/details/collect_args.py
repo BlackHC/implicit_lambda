@@ -2,8 +2,8 @@
 from dataclasses import dataclass
 import typing
 
-from blackhc.implicit_lambda.details import expression
-from blackhc.implicit_lambda.args_resolver import CollectedArgs, ResolvedArgs, strict_resolver
+from implicit_lambda.details import expression
+from implicit_lambda.args_resolver import CollectedArgs, ResolvedArgs, strict_resolver
 
 
 def add_arg(context: CollectedArgs, accessor: expression.ArgsAccessor):

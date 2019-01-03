@@ -2,7 +2,7 @@ import pytest_benchmark
 import operator
 import functools
 
-from blackhc.implicit_lambda import _, to_lambda
+from implicit_lambda import _, to_lambda
 
 
 def test_normal_lambda(benchmark):

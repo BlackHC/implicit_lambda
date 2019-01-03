@@ -3,11 +3,11 @@ import pytest
 import hypothesis
 import hypothesis.strategies as strategies
 
-import blackhc.implicit_lambda as implicit_lambda
-from blackhc.implicit_lambda.details import lambda_dsl
-from blackhc.implicit_lambda.details import expression
-from blackhc.implicit_lambda.details import codegen
-from blackhc.implicit_lambda.details import interpret
+import implicit_lambda as implicit_lambda
+from implicit_lambda.details import lambda_dsl
+from implicit_lambda.details import expression
+from implicit_lambda.details import codegen
+from implicit_lambda.details import interpret
 
 
 def capture_exception(func):

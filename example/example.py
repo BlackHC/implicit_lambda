@@ -1,5 +1,5 @@
-from blackhc.implicit_lambda import _, x, y, to_lambda
-from blackhc.implicit_lambda.builtins import map
+from implicit_lambda import _, x, y, to_lambda
+from implicit_lambda.builtins import map
 
 
 def main():

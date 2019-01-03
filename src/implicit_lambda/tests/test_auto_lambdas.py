@@ -1,6 +1,6 @@
-from blackhc.implicit_lambda import builtins
-from blackhc.implicit_lambda import itertools, functools
-from blackhc.implicit_lambda import _, to_lambda
+from implicit_lambda import builtins
+from implicit_lambda import itertools, functools
+from implicit_lambda import _, to_lambda
 
 
 def test_builtins():

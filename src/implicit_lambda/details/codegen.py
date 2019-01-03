@@ -3,8 +3,8 @@ import builtins
 import math
 from dataclasses import dataclass
 
-from blackhc.implicit_lambda.details import collect_args
-from blackhc.implicit_lambda.details import expression
+from implicit_lambda.details import collect_args
+from implicit_lambda.details import expression
 
 
 @dataclass

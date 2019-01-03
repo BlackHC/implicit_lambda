@@ -1,7 +1,7 @@
 import functools
 
-from blackhc.implicit_lambda.details import lambda_dsl
-from blackhc.implicit_lambda.details import codegen
+from implicit_lambda.details import lambda_dsl
+from implicit_lambda.details import codegen
 
 
 def to_lambda(expr, *, args_resolver=None):

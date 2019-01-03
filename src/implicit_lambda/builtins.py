@@ -2,8 +2,8 @@
 
 import builtins
 import functools
-from blackhc.implicit_lambda import wrap, to_lambda
-from blackhc.implicit_lambda import args_resolver
+from implicit_lambda import wrap, to_lambda
+from implicit_lambda import args_resolver
 
 abs = functools.update_wrapper(lambda *args, **kwargs: builtins.abs(*args, **kwargs), builtins.abs)
 abs._ = functools.update_wrapper(lambda *args, **kwargs: wrap(builtins.abs)(*args, **kwargs), builtins.abs)

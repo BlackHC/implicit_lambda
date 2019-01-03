@@ -1,6 +1,6 @@
 # Implicit lambdas
 
-[![Build Status](https://www.travis-ci.com/BlackHC/implicit_lambda.svg?branch=master)](https://www.travis-ci.com/BlackHC/implicit_lambda) [![codecov](https://codecov.io/gh/BlackHC/implicit_lambda/branch/master/graph/badge.svg)](https://codecov.io/gh/BlackHC/implicit_lambda) [![PyPI](https://img.shields.io/badge/PyPI-blackhc.implicit_lambda-blue.svg)](https://pypi.python.org/pypi/blackhc.implicit_lambda/)
+[![Build Status](https://www.travis-ci.com/BlackHC/implicit_lambda.svg?branch=master)](https://www.travis-ci.com/BlackHC/implicit_lambda) [![codecov](https://codecov.io/gh/BlackHC/implicit_lambda/branch/master/graph/badge.svg)](https://codecov.io/gh/BlackHC/implicit_lambda) [![PyPI](https://img.shields.io/badge/PyPI-implicit_lambda-blue.svg)](https://pypi.python.org/pypi/implicit_lambda/)
 
 This package adds support for implicit lambdas, so you can write `map(_ + 5, a_list)` instead of `map(lambda x: x + 5, a_list)`.
 
@@ -44,7 +44,7 @@ Wrapped versions of `builtin`, `functools` and `itertools` are provided out-of-t
 To install using pip, use:
 
 ```
-pip install blackhc.implicit_lambda
+pip install implicit_lambda
 ```
 
 To run the tests, use:
@@ -60,8 +60,8 @@ To enable implicit lambdas, import placeholder symbols as needed and import wrap
 Usually, `to_lambda` and other helper functions don't need to be called.
 
 ```python
-from blackhc.implicit_lambda import _, x, y, to_lambda
-from blackhc.implicit_lambda.builtins import map
+from implicit_lambda import _, x, y, to_lambda
+from implicit_lambda.builtins import map
 ```
 
 Implicit lambda provides wrappers around all common builtins.

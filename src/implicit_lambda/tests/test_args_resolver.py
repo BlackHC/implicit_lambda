@@ -1,6 +1,6 @@
 import pytest
 
-from blackhc.implicit_lambda.args_resolver import (
+from implicit_lambda.args_resolver import (
     from_allowed_signatures,
     flexible_args,
     resolve_args,

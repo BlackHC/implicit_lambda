@@ -3,7 +3,7 @@
 import functools
 import itertools
 import operator
-from blackhc.implicit_lambda import wrap, to_lambda
+from implicit_lambda import wrap, to_lambda
 
 chain = functools.update_wrapper(lambda *args, **kwargs: itertools.chain(*args, **kwargs), itertools.chain)
 chain._ = functools.update_wrapper(lambda *args, **kwargs: wrap(itertools.chain)(*args, **kwargs), itertools.chain)

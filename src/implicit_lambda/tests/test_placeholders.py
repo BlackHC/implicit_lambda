@@ -1,7 +1,7 @@
 import pytest
 
-from blackhc.implicit_lambda import to_lambda, x, y
-from blackhc.implicit_lambda.details import expression
+from implicit_lambda import to_lambda, x, y
+from implicit_lambda.details import expression
 
 
 @pytest.mark.parametrize("op", expression.ComparisonOps)

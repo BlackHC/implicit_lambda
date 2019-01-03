@@ -1,8 +1,8 @@
 """Implicit lambda wrappers around all Python functools functions."""
 
 import functools
-from blackhc.implicit_lambda import wrap, to_lambda
-from blackhc.implicit_lambda import args_resolver
+from implicit_lambda import wrap, to_lambda
+from implicit_lambda import args_resolver
 
 partial = functools.update_wrapper(
     lambda arg0, *args, **kwargs: functools.partial(to_lambda(arg0), *args, **kwargs), functools.partial

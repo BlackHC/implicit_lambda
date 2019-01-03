@@ -1,5 +1,5 @@
-from blackhc.implicit_lambda.details import expression
-from blackhc.implicit_lambda.details import glue
+from implicit_lambda.details import expression
+from implicit_lambda.details import glue
 
 
 class OpExpression:

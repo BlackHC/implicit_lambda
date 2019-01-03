@@ -1,6 +1,6 @@
 """Implicit lambda domain-specific language that wraps Python expressions into an internal expression AST."""
-from blackhc.implicit_lambda.details import expression
-from blackhc.implicit_lambda.details import codegen
+from implicit_lambda.details import expression
+from implicit_lambda.details import codegen
 
 
 _exprs = {}
