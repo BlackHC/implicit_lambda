@@ -119,3 +119,11 @@ Run
 ```python
 python -O -m pytest -k test_performance --benchmark-warmup=on --benchmark-autosave --benchmark-disable-gc
 ```
+
+## Advanced features
+
+Some operators are not supported directly because returning LambdaDSL would not work (`__bool__`, `__contains__`) or it could cause issues (`__repr__`).
+
+There are wrapped builtins (`bool._` and `repr._`) that can be used instead, or helper functions like `contains` and `not_contains` that are exported from `implicit_lambda`.
+
+Additionally, `implicit_lambda` supports custom `arg_resolvers` that map placeholders to lambda function arguments. By default, `strict_resolver` is used. There is also `from_allowed_signatures`, which picks the first argument signature that contains all used placeholder arguments, and `flexible_args`, which supports more than a required number of arguments and a custom partial ordering of placeholders in the case of conflicts.
