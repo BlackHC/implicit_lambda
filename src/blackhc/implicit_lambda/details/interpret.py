@@ -146,6 +146,12 @@ def eval_expr(expr, context):
                 return math.ceil(eval_expr(expr.arg0, context))
             # ## end `cg.OpExpression.generate_evals()`
 
+            if expr.op == expression.SpecialOps.CONTAINS:
+                return eval_expr(expr.arg1, context) in eval_expr(expr.arg0, context)
+
+            if expr.op == expression.SpecialOps.NOT_CONTAINS:
+                return eval_expr(expr.arg1, context) not in eval_expr(expr.arg0, context)
+
             if expr.op == expression.OptionalArgOps.POW_2:
                 return pow(eval_expr(expr.arg0, context), eval_expr(expr.arg1, context))
 

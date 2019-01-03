@@ -57,3 +57,22 @@ def test_bool():
 def test_contains():
     with pytest.raises(NotImplementedError):
         None in implicit_lambda._
+
+
+def test_not_contains():
+    with pytest.raises(NotImplementedError):
+        None not in implicit_lambda._
+
+
+def test_contains_wrappers():
+    assert (
+        repr(implicit_lambda.contains(implicit_lambda.a, implicit_lambda.b))
+        == "<LambdaDSL: (lambda a, b: (b) in (a)) @ {}>"
+    )
+
+
+def test_not_contains_wrappers():
+    assert (
+        repr(implicit_lambda.not_contains(implicit_lambda.a, implicit_lambda.b))
+        == "<LambdaDSL: (lambda a, b: (b) not in (a)) @ {}>"
+    )

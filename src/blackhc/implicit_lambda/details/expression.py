@@ -103,6 +103,8 @@ class SpecialOps(Enum):
     COMPLEX = OpInfo("", 1, "complex({})")
     STR = OpInfo("", 1, "str({})")
     REPR = OpInfo("", 1, "repr({})")
+    CONTAINS = OpInfo("", 2, "({1}) in ({0})")
+    NOT_CONTAINS = OpInfo("", 2, "({1}) not in ({0})")
 
 
 @dataclass(frozen=True)

@@ -276,6 +276,18 @@ def call(func: callable, *args, **kwargs):
     return LambdaDSL(expression.CallExpression(func, get_expr(args), get_expr(kwargs)))
 
 
+def contains(container, item):
+    return LambdaDSL(
+        expression.OpExpression(expression.SpecialOps.CONTAINS, 2, get_expr(container), get_expr(item), None)
+    )
+
+
+def not_contains(container, item):
+    return LambdaDSL(
+        expression.OpExpression(expression.SpecialOps.NOT_CONTAINS, 2, get_expr(container), get_expr(item), None)
+    )
+
+
 def kw(keyword: str):
     """Placeholder for a keyword argument."""
     return LambdaDSL(expression.KwArgsAccessor(keyword))

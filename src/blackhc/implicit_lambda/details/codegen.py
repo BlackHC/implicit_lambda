@@ -116,10 +116,10 @@ def compile(expr, args_resolver=None):
     if __debug__:
         func_globals["__refs"] = refs
         func_source = f'type({lambda_source!r}, (object,), dict(__slots__=(), __call__=staticmethod({lambda_source}), args={resolved_args.args!r}, kwargs={resolved_args.kwargs!r}, refs=__refs, code={lambda_source!r}, __repr__=lambda self: f"<{{self.code}} @ {{self.refs}}>"))()'
-        func_code = builtins.compile(func_source, lambda_source, 'eval', 0, True)
+        func_code = builtins.compile(func_source, lambda_source, "eval", 0, True)
         func = eval(func_code, func_globals, {})
     else:
-        func_code = builtins.compile(lambda_source, lambda_source, 'eval', 0, True)
+        func_code = builtins.compile(lambda_source, lambda_source, "eval", 0, True)
         func = eval(func_code, func_globals, {})
         func.code = lambda_source
         func.refs = refs
