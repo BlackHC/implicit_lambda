@@ -76,3 +76,32 @@ def test_not_contains_wrappers():
         repr(implicit_lambda.not_contains(implicit_lambda.a, implicit_lambda.b))
         == "<LambdaDSL: (lambda a, b: (b) not in (a)) @ {}>"
     )
+
+
+def test_logical_and():
+    assert (
+        repr(implicit_lambda.logical_and(implicit_lambda.a, implicit_lambda.b))
+        == "<LambdaDSL: (lambda a, b: (a) and (b)) @ {}>"
+    )
+    assert (
+        repr(implicit_lambda.logical_and(implicit_lambda.a, implicit_lambda.b, implicit_lambda.c))
+        == "<LambdaDSL: (lambda a, b, c: (a) and ((b) and (c))) @ {}>"
+    )
+
+
+def test_logical_or():
+    assert (
+        repr(implicit_lambda.logical_or(implicit_lambda.a, implicit_lambda.b))
+        == "<LambdaDSL: (lambda a, b: (a) or (b)) @ {}>"
+    )
+    assert (
+        repr(implicit_lambda.logical_or(implicit_lambda.a, implicit_lambda.b, implicit_lambda.c))
+        == "<LambdaDSL: (lambda a, b, c: (a) or ((b) or (c))) @ {}>"
+    )
+
+
+def test_logical_not():
+    assert (
+        repr(implicit_lambda.logical_not(implicit_lambda.a))
+        == "<LambdaDSL: (lambda a: not(a)) @ {}>"
+    )

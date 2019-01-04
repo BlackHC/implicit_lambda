@@ -288,6 +288,26 @@ def not_contains(container, item):
     )
 
 
+def logical_and(expr1, expr2, *exprs):
+    if not exprs:
+        return LambdaDSL(
+            expression.OpExpression(expression.SpecialOps.LOGICAL_AND, 2, get_expr(expr1), get_expr(expr2), None)
+        )
+    return logical_and(expr1, logical_and(expr2, *exprs))
+
+
+def logical_or(expr1, expr2, *exprs):
+    if not exprs:
+        return LambdaDSL(
+            expression.OpExpression(expression.SpecialOps.LOGICAL_OR, 2, get_expr(expr1), get_expr(expr2), None)
+        )
+    return logical_or(expr1, logical_or(expr2, *exprs))
+
+
+def logical_not(expr):
+    return LambdaDSL(expression.OpExpression(expression.SpecialOps.LOGICAL_NOT, 1, get_expr(expr), None, None))
+
+
 def kw(keyword: str):
     """Placeholder for a keyword argument."""
     return LambdaDSL(expression.KwArgsAccessor(keyword))
