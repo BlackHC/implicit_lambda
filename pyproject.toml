@@ -1,0 +1,56 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "implicit_lambda"
+version = "0.4.1"
+description = "Implicit lambdas with placeholder notation and code generation"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Andreas @blackhc Kirsch", email = "blackhc+implicit_lambda@gmail.com"}
+]
+keywords = ["tools", "lambda", "placeholder"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+requires-python = ">=3.8"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["check-manifest"]
+test = [
+    "coverage",
+    "codecov",
+    "pytest",
+    "pytest-benchmark",
+    "pytest-cov",
+    "hypothesis",
+]
+
+[project.urls]
+Homepage = "https://github.com/blackhc/implicit_lambda"
+Repository = "https://github.com/blackhc/implicit_lambda"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "--cov=implicit_lambda"
+testpaths = ["src/implicit_lambda/tests"]
+
+[tool.yapf]
+based_on_style = "google"
+column_limit = 120
+
