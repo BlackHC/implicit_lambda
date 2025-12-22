@@ -69,3 +69,28 @@ def test_round(x, n):
 
     expr = expression.OpExpression(expression.OptionalArgOps.ROUND_2, 2, x, n, None)
     assert codegen.compile(expr)() == round(x, n)
+
+
+@hypothesis.given(x=strategies.floats(allow_infinity=False, allow_nan=False), n=strategies.integers(1, 10))
+def test_round_interpreter(x, n):
+    """Test that interpreter correctly handles round operations (regression test for math.round bug)."""
+    # Test ROUND_1 with interpreter
+    expr = expression.OpExpression(expression.OptionalArgOps.ROUND_1, 1, x, None, None)
+    elambda = interpret.to_lambda(expr)
+    clambda = codegen.compile(expr)
+    assert elambda() == clambda() == round(x)
+
+    # Test ROUND_2 with interpreter
+    expr = expression.OpExpression(expression.OptionalArgOps.ROUND_2, 2, x, n, None)
+    elambda = interpret.to_lambda(expr)
+    clambda = codegen.compile(expr)
+    assert elambda() == clambda() == round(x, n)
+
+
+def test_logical_not_num_args():
+    """Test that LOGICAL_NOT has correct num_args (regression test for num_args=2 bug)."""
+    logical_not_op = expression.SpecialOps.LOGICAL_NOT.value
+    # LOGICAL_NOT should have 1 argument, not 2
+    assert logical_not_op.num_args == 1
+    # Template should have exactly 1 placeholder
+    assert logical_not_op.template.count("{}") == 1

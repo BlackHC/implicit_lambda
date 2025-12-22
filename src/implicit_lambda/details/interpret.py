@@ -159,10 +159,10 @@ def eval_expr(expr, context):
                 return pow(eval_expr(expr.arg0, context), eval_expr(expr.arg1, context), eval_expr(expr.arg2, context))
 
             if expr.op == expression.OptionalArgOps.ROUND_1:
-                return math.round(eval_expr(expr.arg0, context))
+                return round(eval_expr(expr.arg0, context))
 
             if expr.op == expression.OptionalArgOps.ROUND_2:
-                return math.round(eval_expr(expr.arg0, context), eval_expr(expr.arg1, context))
+                return round(eval_expr(expr.arg0, context), eval_expr(expr.arg1, context))
 
             raise NotImplementedError(expr.op)
 

@@ -107,7 +107,7 @@ class SpecialOps(Enum):
     NOT_CONTAINS = OpInfo("", 2, "({1}) not in ({0})")
     LOGICAL_AND = OpInfo("", 2, "({}) and ({})")
     LOGICAL_OR = OpInfo("", 2, "({}) or ({})")
-    LOGICAL_NOT = OpInfo("", 2, "not({})")
+    LOGICAL_NOT = OpInfo("", 1, "not({})")
 
 
 @dataclass(frozen=True)
