@@ -67,3 +67,11 @@ def test_from_allowed_signatures_rejects_invalid():
 
     with pytest.raises(SyntaxError):
         from_allowed_signatures()(valid_context)
+
+
+def test_from_allowed_signatures_rejects_kwargs():
+    """Test that from_allowed_signatures raises SyntaxError when kwargs are provided (regression test for assert bug)."""
+    context_with_kwargs = CollectedArgs({0: set(("x",))}, ["extra_kwarg"])
+
+    with pytest.raises(SyntaxError, match="Kwargs not supported"):
+        from_allowed_signatures(("x", "y"))(context_with_kwargs)

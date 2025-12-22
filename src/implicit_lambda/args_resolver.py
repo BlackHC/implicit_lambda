@@ -47,7 +47,7 @@ def flexible_args(required_args=None, ordering=None):
 def from_allowed_signatures(*signatures):
     def resolver(context: CollectedArgs):
         if context.kwargs:
-            assert SyntaxError(f"Kwargs not supported in `from_allowed_signatures`! {context}")
+            raise SyntaxError(f"Kwargs not supported in `from_allowed_signatures`! {context}")
 
         args = set(itertools.chain.from_iterable(context.args.values()))
         for signature in signatures:
